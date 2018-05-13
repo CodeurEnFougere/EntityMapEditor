@@ -41,241 +41,251 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 public class Controleur implements Initializable{
-	
+
 	Stage stage = EntityMapEditor.stage;
-	
+
 	@FXML
-    private TabPane tabPane;
+	private TabPane tabPane;
 
-    @FXML
-    private SplitPane worldSPane;
-	
-    @FXML
-    private Pane world1;
-    @FXML
-    private TilePane backgroundWorld1;
-    @FXML
-    private TilePane solidWorld1;
-    @FXML
-    private TilePane topWorld1;
-    @FXML
-    private Pane entityWorld1;
+	@FXML
+	private SplitPane worldSPane;
 
-    @FXML
-    private Pane world2;
-    @FXML
-    private TilePane backgroundWorld2;
-    @FXML
-    private TilePane solidWorld2;
-    @FXML
-    private TilePane topWorld2;
-    @FXML
-    private Pane entityWorld2;
-    
-    @FXML
-    private Pane toolBar;
-    
-    @FXML
-    private TextArea world1Text;
-    @FXML
-    private TextArea world2Text;
+	@FXML
+	private Pane world1;
+	@FXML
+	private TilePane backgroundWorld1;
+	@FXML
+	private TilePane solidWorld1;
+	@FXML
+	private TilePane topWorld1;
+	@FXML
+	private Pane entityWorld1;
 
-    @FXML
-    private CheckBox world1Save;
-    @FXML
-    private CheckBox world2Save;
-    
-    @FXML
-    private ImageView grabImg;
-    @FXML
-    private ImageView selectImg;
-    
-    @FXML
-    private TableColumn<?, ?> leftTable;
+	@FXML
+	private Pane world2;
+	@FXML
+	private TilePane backgroundWorld2;
+	@FXML
+	private TilePane solidWorld2;
+	@FXML
+	private TilePane topWorld2;
+	@FXML
+	private Pane entityWorld2;
 
-    @FXML
-    private TableColumn<?, ?> rightTable;
-    
-    ImageView selectedTool;
-    ImageView selectedEntityType;
-    ImageView selectTile;
-    boolean selectTileInWorld1=false;
-    
-    Map<Integer,Image> dicoImageTileTextureMap = new HashMap<>();
-    
-    Entity selectedEntity;
-    
-    boolean mousePress=false;
-    double paneX=0;
-    double paneY=0;
-    double mousePressX=0;
-    double mousePressY=0;
-    
-    int tool=0;
-    int entityType=0;
-    
-    Pane tempPane;
-    
-    boolean isEvent=false;
-    
-    String mapNameTp;
-    Entity newEntity;
-    Coordonnees tpCoordonnees;
-    
-    ArrayList<ImageView> entitysWorld1 ;
-    ArrayList<ImageView> entitysWorld2 ;
-    
-    Alert alert = new Alert(AlertType.INFORMATION);
-    @FXML
-    void SaveEntityButton(ActionEvent event) {	
-    	try {
-    		if(world1Save.isSelected() && Loader.world1!=null) {
-    			Saver.saveEntity(Loader.world1);
-    			alert.setContentText("Succefully saving entitys");
-    		}
-    		
-    		if(world2Save.isSelected() && Loader.world2!=null) {
-    			Saver.saveEntity(Loader.world2);
-    			alert.setContentText("Succefully saving entitys");
-    		}
-	
-    	}catch(Exception e) {
-    		alert.setAlertType(AlertType.ERROR);
-    		alert.setContentText("Fail to save entitys : "+e);
-    		e.printStackTrace();
-    	}
-    	
-    	if(world1Save.isSelected() && Loader.world1!=null || world2Save.isSelected() && Loader.world2!=null ) { 	
-    		
+	@FXML
+	private Pane toolBar;
+
+	@FXML
+	private TextArea world1Text;
+	@FXML
+	private TextArea world2Text;
+
+	@FXML
+	private CheckBox world1Save;
+	@FXML
+	private CheckBox world2Save;
+
+	@FXML
+	private ImageView grabImg;
+	@FXML
+	private ImageView selectImg;
+
+	@FXML
+	private TableColumn<?, ?> leftTable;
+
+	@FXML
+	private TableColumn<?, ?> rightTable;
+
+	ImageView selectedTool;
+	ImageView selectedEntityType;
+	ImageView selectTile;
+	boolean selectTileInWorld1=false;
+
+	Map<Integer,Image> dicoImageTileTextureMap = new HashMap<>();
+
+	Entity selectedEntity;
+
+	boolean mousePress=false;
+	double paneX=0;
+	double paneY=0;
+	double mousePressX=0;
+	double mousePressY=0;
+
+	int tool=0;
+	int entityType=0;
+
+	Pane tempPane;
+
+	boolean isEvent=false;
+
+	String mapNameTp;
+	Entity newEntity;
+	Coordonnees tpCoordonnees;
+
+	ArrayList<ImageView> entitysWorld1 ;
+	ArrayList<ImageView> entitysWorld2 ;
+
+	Alert alert = new Alert(AlertType.INFORMATION);
+	@FXML
+	void SaveEntityButton(ActionEvent event) {	
+		try {
+			if(world1Save.isSelected() && Loader.world1!=null) {
+				Saver.saveEntity(Loader.world1);
+				alert.setContentText("Succefully saving entitys");
+			}
+
+			if(world2Save.isSelected() && Loader.world2!=null) {
+				Saver.saveEntity(Loader.world2);
+				alert.setContentText("Succefully saving entitys");
+			}
+
+		}catch(Exception e) {
+			alert.setAlertType(AlertType.ERROR);
+			alert.setContentText("Fail to save entitys : "+e);
+			e.printStackTrace();
+		}
+
+		if(world1Save.isSelected() && Loader.world1!=null || world2Save.isSelected() && Loader.world2!=null ) { 	
+
 		}else {
 			alert.setAlertType(AlertType.WARNING);
 			alert.setContentText("A world need to be selected or loaded to save it's entitys");
 		}
-    	alert.show();
-    }
+		alert.show();
+	}
 
-    
-    @FXML
-    void loadWorld1Button(ActionEvent event) {
-    	if(!world1Text.getText().equals("")) {
-    		loadWorld(world1Text.getText(), true);
-    	}else {
-    		alert.setAlertType(AlertType.WARNING);
-    		alert.setContentText("A name is needed to load");
-    		alert.show();
-    	}
-    }
 
-    @FXML
-    void loadWorld2Button(ActionEvent event) {
-    	if(!world2Text.getText().equals("")) {
-    		loadWorld(world2Text.getText(), false);
-    	}else {
-    		alert.setAlertType(AlertType.WARNING);
-    		alert.setContentText("A name is needed to load");
-    		alert.show();
-    	}
-    }
-    
-    private void mouseEventMove(MouseEvent me,Pane pane) {
-    	if(me.getEventType()==MouseEvent.MOUSE_MOVED && tool>0) {
-    		System.out.println("move");
-    		if(pane.getId()==world1.getId()){
-    			if(!selectTileInWorld1) {
-    				world1.getChildren().add(selectTile);
-    				selectTileInWorld1=true;
-    				world2.getChildren().remove(selectTile);
-    			}
-    			
-    		}else {
-    			if(selectTileInWorld1) {
-    				world2.getChildren().add(selectTile);
-    				world1.getChildren().remove(selectTile);
-    				selectTileInWorld1=false;
-    			}
-    		}
-    		selectTile.relocate(((int)(me.getX()/32))*32-1, ((int)(me.getY()/32))*32-1);
-    	}
-    }
-    
-    private void mouseEvent(MouseEvent me,Pane pane) {
+	@FXML
+	void loadWorld1Button(ActionEvent event) {
+		if(!world1Text.getText().equals("")) {
+			loadWorld(world1Text.getText(), true);
+		}else {
+			alert.setAlertType(AlertType.WARNING);
+			alert.setContentText("A name is needed to load");
+			alert.show();
+		}
+	}
 
-    	
-    	if(tool==0) {
-    		if(me.getEventType()==MouseEvent.MOUSE_PRESSED) {
-    			if(!mousePress) {
-    				mousePress=true;
-    				mousePressX=me.getX();
-    				mousePressY=me.getY();
-    			}
-    		}
-    		
-    		if(me.getEventType()==MouseEvent.MOUSE_RELEASED) {
-    			mousePress=false;
-    		}
-    		
-    		if(me.getEventType()==MouseEvent.MOUSE_DRAGGED) {
-    			if(mousePress) {
-    				pane.relocate(me.getX()-mousePressX+pane.getLayoutX(), me.getY()-mousePressY+pane.getLayoutY());
-    			}
-    		}
-    	}
-    	if(me.getEventType()==MouseEvent.MOUSE_PRESSED) {
-    	if(tool==1 && !isEvent) {
-    		tempPane=pane;
-    		if(entityType==0 && Loader.world1!=null && Loader.world2!=null) {
-    			tpCoordonnees = new Coordonnees((int)me.getX()/32, (int)me.getY()/32);
-    			isEvent=true;
-    			System.out.println("Event true");
-    			if(pane.getId()==world1.getId())
-    				mapNameTp=Loader.world2.getName();
-    			else 
-    				mapNameTp=Loader.world1.getName();
-    		}else {
-    			alert.setAlertType(AlertType.WARNING);
-    			alert.setContentText("All world need to be loaded");
-    			alert.show();
-    		}
-    		
-    	}else if(tool==1 && isEvent && pane!=tempPane) {
-    		isEvent=false;
-    		System.out.println("Event false");
-    		try {
-    			newEntity = new TileEntityTP(1, tpCoordonnees, true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
-    			System.out.println("new entity :"+newEntity);		
-    			
-    			ImageView img;
-			
-				img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
-				img.relocate(newEntity.getX()*32, newEntity.getY()*32);
-				
-				if(pane.getId()==world1.getId()) {
-					world2.getChildren().add(img);
-					Loader.world2.getEntity().add(newEntity);
-				}else {
-					world1.getChildren().add(img);
-					Loader.world1.getEntity().add(newEntity);
+	@FXML
+	void loadWorld2Button(ActionEvent event) {
+		if(!world2Text.getText().equals("")) {
+			loadWorld(world2Text.getText(), false);
+		}else {
+			alert.setAlertType(AlertType.WARNING);
+			alert.setContentText("A name is needed to load");
+			alert.show();
+		}
+	}
+
+	private void mouseEventMove(MouseEvent me,Pane pane) {
+		if(me.getEventType()==MouseEvent.MOUSE_MOVED && tool>0) {
+			if(pane.getId()==world1.getId()){
+				if(!selectTileInWorld1) {
+					world1.getChildren().add(selectTile);
+					selectTileInWorld1=true;
+					world2.getChildren().remove(selectTile);
 				}
-    		} catch (IOException | URISyntaxException e) {e.printStackTrace();}
-			
-			
-    	}
-    	}
-    }
+
+			}else {
+				if(selectTileInWorld1) {
+					world2.getChildren().add(selectTile);
+					world1.getChildren().remove(selectTile);
+					selectTileInWorld1=false;
+				}
+			}
+			selectTile.relocate(((int)(me.getX()/32))*32-1, ((int)(me.getY()/32))*32-1);
+		}
+	}
+
+	private void mouseEvent(MouseEvent me,Pane pane) {
+
+
+		if(tool==0) {
+			if(me.getEventType()==MouseEvent.MOUSE_PRESSED) {
+				if(!mousePress) {
+					mousePress=true;
+					mousePressX=me.getX();
+					mousePressY=me.getY();
+				}
+			}
+
+			if(me.getEventType()==MouseEvent.MOUSE_RELEASED) {
+				mousePress=false;
+			}
+
+			if(me.getEventType()==MouseEvent.MOUSE_DRAGGED) {
+				if(mousePress) {
+					pane.relocate(me.getX()-mousePressX+pane.getLayoutX(), me.getY()-mousePressY+pane.getLayoutY());
+				}
+			}
+		}
+		if(me.getEventType()==MouseEvent.MOUSE_PRESSED) {
+			if(tool==1 && !isEvent) {
+				tempPane=pane;
+				if(entityType==0 && Loader.world1!=null && Loader.world2!=null) {
+					tpCoordonnees = new Coordonnees((int)me.getX()/32, (int)me.getY()/32);
+					isEvent=true;
+					System.out.println("Event true");
+					if(pane.getId()==world1.getId())
+						mapNameTp=Loader.world2.getName();
+					else 
+						mapNameTp=Loader.world1.getName();
+				}else {
+					alert.setAlertType(AlertType.WARNING);
+					alert.setContentText("All world need to be loaded");
+					alert.show();
+				}
+
+			}else if(tool==1 && isEvent && pane!=tempPane) {
+				isEvent=false;
+				System.out.println("Event false");
+				try {
+					newEntity = new TileEntityTP(1, tpCoordonnees, true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
+					System.out.println("new entity :"+newEntity);		
+
+					ImageView img;
+
+					img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+					img.relocate(newEntity.getX()*32, newEntity.getY()*32);
+
+					if(pane.getId()==world1.getId()) {
+						world2.getChildren().add(img);
+						Loader.world2.getEntity().add(newEntity);
+					}else {
+						world1.getChildren().add(img);
+						Loader.world1.getEntity().add(newEntity);
+					}
+				} catch (IOException | URISyntaxException e) {e.printStackTrace();}
+
+
+			}else if(tool==2) {
+				int x = (int)(me.getX()/32);
+				int y = (int)(me.getY()/32);
+				if(pane.getId()==world1.getId()) {
+					for(ImageView block:entitysWorld1) {
+						if(block.getX()>=x*32-0.1 && block.getY()>=y*32-0.1 && block.getX()<=x*32+0.1 && block.getY()<=y*32+0.1) {
+							System.out.println(Loader.world1.getTile(x, y));
+						}
+					}
+					System.out.println(x+" "+y);
+				}
+			}
+		}
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		init();
 		textureLoading();
 		eventHandler();
-		
+
 		leftTable.setEditable(false);
 		//TODO
-		
+
 	}
-	
+
 	private void loadWorld(String worldName, boolean isWorld1) {
-		
+
 		try {
 			if(isWorld1) {
 				entityWorld1.getChildren().clear();
@@ -289,7 +299,7 @@ public class Controleur implements Initializable{
 				entitysWorld1=new ArrayList<ImageView>();
 				loadEntitys(entitysWorld1, Loader.world1.getEntity());
 				printCalqueEntitys(entitysWorld1, entityWorld1);
-				
+
 			}else {
 				entityWorld2.getChildren().clear();
 				Loader.loadWorld(worldName, false);	
@@ -302,11 +312,11 @@ public class Controleur implements Initializable{
 				entitysWorld2=new ArrayList<ImageView>();
 				loadEntitys(entitysWorld2, Loader.world2.getEntity());
 				printCalqueEntitys(entitysWorld2, entityWorld2);
-				
+
 			}
 			alert = new Alert(AlertType.INFORMATION);
 			alert.setContentText("Succefuly loading \""+worldName+"\"");
-			
+
 		}catch(Exception e) {
 			alert.setAlertType(AlertType.ERROR);
 			alert.setContentText("Failed to load \""+worldName+"\" : "+e);
@@ -314,12 +324,12 @@ public class Controleur implements Initializable{
 		}
 		alert.show();
 	}
-	
+
 	public void loadEntitys(ArrayList<ImageView> entitysImage, ArrayList<Entity> entitys) {
-		
+
 		for(Entity entity:entitys) {
 			ImageView entityImage;
-			
+
 			if(entity instanceof TileEntityTP) {
 				try {
 					entityImage = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
@@ -328,27 +338,27 @@ public class Controleur implements Initializable{
 				}catch (IOException | URISyntaxException e) {
 					e.printStackTrace();
 				}
-				
+
 			}else if(entity instanceof EntityLiving) {
-				
+
 			}else if(entity instanceof TileEntity) {
-				
+
 			}
 		}		
 	}
-	
+
 	private void init() {
 		world1.setStyle("-fx-background-color: #FF0000;");
 		world2.setStyle("-fx-background-color: #0000FF;");
 		toolBar.setStyle("-fx-background-color: #C4C4C4;");
-		
+
 		resize(toolBar, 200,200);
 		resize(world1, 32,32);
 		resize(world2, 32,32);
 	}
 
 	private void eventHandler() {
-		
+
 		ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
 			try {
 				tabPane.setMinWidth(stage.getWidth());
@@ -357,20 +367,20 @@ public class Controleur implements Initializable{
 				worldSPane.setMinHeight(stage.getHeight());
 				toolBar.relocate(stage.getWidth()-200, 0);
 				toolBar.setMinHeight(stage.getHeight());
-				
+
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		};
 
-	    stage.widthProperty().addListener(stageSizeListener);
-	    stage.heightProperty().addListener(stageSizeListener); 
-		
-	    world1.setOnMouseMoved(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEventMove(me,world1);}});
+		stage.widthProperty().addListener(stageSizeListener);
+		stage.heightProperty().addListener(stageSizeListener); 
+
+		world1.setOnMouseMoved(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEventMove(me,world1);}});
 		world2.setOnMouseMoved(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEventMove(me,world2);}});
-	
-	    world1.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world1);}});
+
+		world1.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world1);}});
 		world2.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world2);}});
 		world1.setOnMouseReleased(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world1);}});
 		world2.setOnMouseReleased(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world2);}});
@@ -383,61 +393,61 @@ public class Controleur implements Initializable{
 			grabImg.relocate(10, 30);
 			grabImg.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {tool=0;selectedTool.relocate(9, 29);}});
 			toolBar.getChildren().add(grabImg);
-			
+
 			ImageView placeImg = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/place.png").toURI().toURL()), null));
 			placeImg.relocate(52, 30);
 			placeImg.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {tool=1;selectedTool.relocate(51, 29);}});
 			toolBar.getChildren().add(placeImg);
-			
+
 			ImageView selectImg = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/modify.png").toURI().toURL()), null));
 			selectImg.relocate(94, 30);
 			selectImg.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {tool=2;selectedTool.relocate(93, 29);}});
 			toolBar.getChildren().add(selectImg);
-			
+
 			//Entity Placer
 			ImageView entityTP = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
 			entityTP.relocate(10, 89);
 			entityTP.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=0;selectedEntityType.relocate(9, 88);}});
 			toolBar.getChildren().add(entityTP);
-			
+
 			ImageView entityLiving = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
 			entityLiving.relocate(52, 89);
 			entityLiving.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=1;selectedEntityType.relocate(51, 88);}});
 			toolBar.getChildren().add(entityLiving);
-			
+
 			ImageView tileEntity = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/tileEntity.png").toURI().toURL()), null));
 			tileEntity.relocate(94, 89);
 			tileEntity.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=2;selectedEntityType.relocate(93, 88);}});
 			toolBar.getChildren().add(tileEntity);
-			
-			
+
+
 			selectedTool = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/select.png").toURI().toURL()), null));
 			selectedTool.relocate(9, 29);
 			toolBar.getChildren().add(selectedTool);
-			
+
 			selectedEntityType = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/select.png").toURI().toURL()), null));
 			toolBar.getChildren().add(selectedEntityType);
 			selectedEntityType.relocate(9, 88);
-			
-			
+
+
 		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public void loadMap(boolean isWorld1) {
 		if(isWorld1) {
 			world1.setMinWidth(Loader.world1.getWidth());
 			world1.setMinHeight(Loader.world1.getHeight());
-			
+
 		}else {
 			world2.setMinWidth(Loader.world2.getWidth());
 			world2.setMinHeight(Loader.world2.getHeight());
-			
+
 		}	
 	}
-	
+
 	private void textureLoading() {
 		LoadDicoMap(dicoImageTileTextureMap,32,32,16,16,"TileTextureMap");
 		try {
@@ -446,20 +456,20 @@ public class Controleur implements Initializable{
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void LoadDicoMap(Map<Integer,Image> dico,int imageWidthPixels, int imageHeightPixels, int imageWidth, int imageHeight, String textureMapName) {
 		for(int x = 0; x < imageWidth*imageHeight; x++) {
 			dico.put(x + 1,SwingFXUtils.toFXImage(TextureLoader.getTextureMapImage(textureMapName,imageWidthPixels,imageHeightPixels,imageWidth,imageHeight,x).getTexture(), null));
 		}
 	}
-	
+
 	private void printCalqueEntitys(ArrayList<ImageView> entitysImage, Pane pane) {
 		pane.getChildren().clear();
 		for(ImageView entityImage:entitysImage) {
 			pane.getChildren().add(entityImage);
 		}
 	}
-	
+
 	private void printCalqueTile(TilePane pane, TilePane paneTile, TilePane paneTop, World world) {
 
 		for(int y=0;y<world.getHeight();y++) {
@@ -483,7 +493,7 @@ public class Controleur implements Initializable{
 			}
 		}
 	}
-	
+
 	private void resize(Pane pane, double x, double y) {
 		pane.setMinWidth(x);
 		pane.setMaxWidth(x);
