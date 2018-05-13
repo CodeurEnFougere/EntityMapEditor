@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.TilePane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="638.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.javafx.Controleur">
+   <children>
+      <TabPane fx:id="tabPane" prefHeight="638.0" prefWidth="894.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="World">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="600.0">
+                     <children>
+                        <SplitPane fx:id="worldSPane" dividerPositions="0.5" prefHeight="600.0" prefWidth="556.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <Pane fx:id="world1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="638.0" prefWidth="300.0">
+                                       <children>
+                                          <TilePane fx:id="backgroundWorld1" prefHeight="600.0" prefWidth="300.0" />
+                                          <TilePane fx:id="solidWorld1" prefHeight="600.0" prefWidth="300.0" />
+                                          <TilePane fx:id="topWorld1" prefHeight="600.0" prefWidth="300.0" />
+                                          <Pane fx:id="entityWorld1" prefHeight="600.0" prefWidth="300.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="191.0">
+                                 <children>
+                                    <Pane fx:id="world2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="638.0" prefWidth="300.0">
+                                       <children>
+                                          <TilePane fx:id="backgroundWorld2" prefHeight="600.0" prefWidth="300.0" />
+                                          <TilePane fx:id="solidWorld2" prefHeight="6008.0" prefWidth="300.0" />
+                                          <TilePane fx:id="topWorld2" prefHeight="600.0" prefWidth="300.0" />
+                                          <Pane fx:id="entityWorld2" prefHeight="600.0" prefWidth="300.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Options">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="33.0" layoutY="55.0" mnemonicParsing="false" onAction="#loadWorld1Button" text="Load" />
+                        <Button layoutX="33.0" layoutY="104.0" mnemonicParsing="false" onAction="#loadWorld2Button" text="Load" />
+                        <TextArea fx:id="world1Text" layoutX="93.0" layoutY="49.0" prefHeight="30.0" prefWidth="119.0" />
+                        <TextArea fx:id="world2Text" layoutX="93.0" layoutY="98.0" prefHeight="30.0" prefWidth="119.0" />
+                        <CheckBox fx:id="world1Save" layoutX="300.0" layoutY="59.0" mnemonicParsing="false" selected="true" text="Save" />
+                        <CheckBox fx:id="world2Save" layoutX="300.0" layoutY="109.0" mnemonicParsing="false" selected="true" text="Save" />
+                        <Button layoutX="372.0" layoutY="55.0" mnemonicParsing="false" onAction="#SaveEntityButton" prefHeight="78.0" prefWidth="127.0" text="Save Entitys" />
+                        <Label layoutX="119.0" layoutY="20.0" text="World Name" />
+                        <Label layoutX="234.0" layoutY="59.0" text="World 1" />
+                        <Label layoutX="234.0" layoutY="109.0" text="World 2" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <Pane fx:id="toolBar" layoutX="716.0" prefHeight="638.0" prefWidth="190.0">
+         <children>
+            <TableView layoutX="-1.0" layoutY="358.0" prefHeight="1600.0" prefWidth="190.0">
+              <columns>
+                <TableColumn fx:id="leftTable" prefWidth="95.0" />
+                <TableColumn fx:id="rightTable" prefWidth="94.0" />
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
+   </children>
+</Pane>
