@@ -16,7 +16,7 @@ public class Saver {
 	public static void saveEntity(World world) {
 		try {
 			
-			BufferedWriter entitysData = new BufferedWriter(new FileWriter(new File("ressources/map/"+world.getName()+".entity")));
+			BufferedWriter entitysData = new BufferedWriter(new FileWriter(new File("ressources/map/"+world.getName()+".entity").getAbsolutePath()));
 				
 			for(Entity curEntity:world.getEntity()) {
 				
@@ -56,10 +56,9 @@ public class Saver {
 			entitysData.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-
-		
+		}	
 		
 	}
+
 	
 }

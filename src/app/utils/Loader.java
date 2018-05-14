@@ -24,7 +24,7 @@ public class Loader {
 	public static void loadWorld(String file, boolean isWorld1) {
 		try {
 			//Chargement des tiles
-			BufferedReader tilesData = new BufferedReader(new FileReader(new File("ressources/map/"+file+".map")));
+			BufferedReader tilesData = new BufferedReader(new FileReader(new File("ressources/map/"+file+".map").getAbsolutePath()));
 
 			String name = tilesData.readLine();
 			int width = Integer.parseInt(tilesData.readLine());
@@ -52,7 +52,7 @@ public class Loader {
 		ArrayList<Entity> entity= new ArrayList<Entity>();
 		BufferedReader entityData;
 		try {
-			entityData = new BufferedReader(new FileReader(new File("ressources/map/"+file+".entity")));
+			entityData = new BufferedReader(new FileReader(new File("ressources/map/"+file+".entity").getAbsolutePath()));
 		
 		
 		String nextLine = entityData.readLine();
@@ -100,7 +100,7 @@ public class Loader {
 	
 
 	/*
-	 * Chargement d'un Tableau de Tile utilisé par la fonction loadWorld();
+	 * Chargement d'un Tableau de Tile utilisï¿½ par la fonction loadWorld();
 	 * */
 	private static Tile[][] makeTileGrid(int width,int height,BufferedReader br){
 		try {
