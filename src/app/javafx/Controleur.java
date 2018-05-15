@@ -29,7 +29,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
@@ -351,6 +350,8 @@ public class Controleur implements Initializable{
 
 					img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
 					img.relocate(newEntity.getX()*32, newEntity.getY()*32);
+					img.setId(""+idImageView);
+					idImageView++;
 
 					if(pane.getId()==world2.getId()) {
 						world1.getChildren().add(img);
