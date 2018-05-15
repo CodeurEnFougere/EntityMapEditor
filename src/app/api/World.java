@@ -62,6 +62,14 @@ public class World {
 			return tilesTop[x][y];
 	}
 	
+	public Entity getEntity(double x, double y) {
+		for(Entity entity:this.entity) {
+			if(entity.getX()==x && entity.getY()==y)
+				return entity;
+		}
+		return null;
+	}
+	
 	public ArrayList<Entity> getEntity(){
 		return this.entity;
 	}

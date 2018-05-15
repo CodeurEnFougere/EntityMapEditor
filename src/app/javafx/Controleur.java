@@ -20,19 +20,24 @@ import app.api.TileEntityTP;
 import app.api.World;
 import app.utils.Loader;
 import app.utils.Saver;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -91,10 +96,40 @@ public class Controleur implements Initializable{
 	private ImageView selectImg;
 
 	@FXML
-	private TableColumn<?, ?> leftTable;
+	private TextField tab1;
 
 	@FXML
-	private TableColumn<?, ?> rightTable;
+	private TextField tab2;
+
+	@FXML
+	private TextField tab3;
+
+	@FXML
+	private TextField tab4;
+
+	@FXML
+	private TextField tab5;
+
+	@FXML
+	private TextField tab6;
+
+	@FXML
+	private Label label1;
+
+	@FXML
+	private Label label2;
+
+	@FXML
+	private Label label3;
+
+	@FXML
+	private Label label4;
+
+	@FXML
+	private Label label5;
+
+	@FXML
+	private Label label6;
 
 	ImageView selectedTool;
 	ImageView selectedEntityType;
@@ -104,6 +139,9 @@ public class Controleur implements Initializable{
 	Map<Integer,Image> dicoImageTileTextureMap = new HashMap<>();
 
 	Entity selectedEntity;
+	boolean selectedEntityOnWorld1;
+	StringProperty selectedEntityTextureId;
+	ImageView selectedEntityTexture;
 
 	boolean mousePress=false;
 	double paneX=0;
@@ -113,7 +151,7 @@ public class Controleur implements Initializable{
 
 	int tool=0;
 	int entityType=0;
-
+	int idImageView=0;
 	Pane tempPane;
 
 	boolean isEvent=false;
@@ -126,6 +164,72 @@ public class Controleur implements Initializable{
 	ArrayList<ImageView> entitysWorld2 ;
 
 	Alert alert = new Alert(AlertType.INFORMATION);
+
+	@FXML
+	void saveEntity(ActionEvent event) {
+		if(selectedEntityTexture!=null)
+		try {
+			if(selectedEntityOnWorld1) {
+				Loader.world1.getEntity().remove(selectedEntity);
+				entitysWorld1.remove(selectedEntityTexture);
+				entityWorld1.getChildren().remove(selectedEntityTexture);
+				ImageView img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+				img.relocate(Double.parseDouble(tab1.getText())*32, Double.parseDouble(tab2.getText())*32);
+				img.setId(""+idImageView);
+				idImageView++;
+				entitysWorld1.add(img);
+				entityWorld1.getChildren().add(img);
+				if(selectedEntity instanceof TileEntityTP) {
+					Loader.world1.getEntity().add(new TileEntityTP(1, new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
+				}
+				
+			}else {
+				Loader.world2.getEntity().remove(selectedEntity);
+				entitysWorld2.remove(selectedEntityTexture);
+				entityWorld2.getChildren().remove(selectedEntityTexture);
+				ImageView img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+				img.relocate(Double.parseDouble(tab1.getText())*32, Double.parseDouble(tab2.getText())*32);
+				img.setId(""+idImageView);
+				idImageView++;
+				entitysWorld2.add(img);
+				entityWorld2.getChildren().add(img);
+				if(selectedEntity instanceof TileEntityTP) {
+					Loader.world2.getEntity().add(new TileEntityTP(1, new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
+				}
+			}
+			selectedEntityTexture=null;
+		}catch(Exception e) {
+			alert.setAlertType(AlertType.ERROR);
+			alert.setContentText("Un des champs");
+			alert.show();
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	void deleteEntity(ActionEvent event) {
+		if(selectedEntity!=null) {
+			if(selectedEntity instanceof TileEntityTP) {
+				if(selectedEntityOnWorld1) {
+					Loader.world1.getEntity().remove(selectedEntity);
+					entitysWorld1.remove(selectedEntityTexture);
+					entityWorld1.getChildren().remove(selectedEntityTexture);
+
+				}else {
+					Loader.world2.getEntity().remove(selectedEntity);
+					entitysWorld2.remove(selectedEntityTexture);
+					entityWorld2.getChildren().remove(selectedEntityTexture);
+				}
+			}
+			tab1.clear();
+			tab2.clear();
+			tab3.clear();
+			tab4.clear();
+			tab5.clear();
+			tab6.clear();
+		}
+	}
+
 	@FXML
 	void SaveEntityButton(ActionEvent event) {	
 		try {
@@ -248,28 +352,61 @@ public class Controleur implements Initializable{
 					img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
 					img.relocate(newEntity.getX()*32, newEntity.getY()*32);
 
-					if(pane.getId()==world1.getId()) {
-						world2.getChildren().add(img);
-						Loader.world2.getEntity().add(newEntity);
-					}else {
+					if(pane.getId()==world2.getId()) {
 						world1.getChildren().add(img);
+						entitysWorld1.add(img);
 						Loader.world1.getEntity().add(newEntity);
+					}else if(pane.getId()==world1.getId()){
+						world2.getChildren().add(img);
+						entitysWorld2.add(img);
+						Loader.world2.getEntity().add(newEntity);
 					}
 				} catch (IOException | URISyntaxException e) {e.printStackTrace();}
 
 
 			}else if(tool==2) {
-				int x = (int)(me.getX()/32);
-				int y = (int)(me.getY()/32);
 				if(pane.getId()==world1.getId()) {
 					for(ImageView block:entitysWorld1) {
-						if(block.getX()>=x*32-0.1 && block.getY()>=y*32-0.1 && block.getX()<=x*32+0.1 && block.getY()<=y*32+0.1) {
-							System.out.println(Loader.world1.getTile(x, y));
+						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
+							selectedEntityOnWorld1=true;
+							selectedEntity = Loader.world1.getEntity((int)(me.getX()/32),(int)(me.getY()/32));
+							selectedEntityTextureId.setValue(""+block.getId());
+							selectedEntityTexture=block;
+							System.out.println(selectedEntity);
+							System.out.println(block.getId());
+
 						}
 					}
-					System.out.println(x+" "+y);
-				}
-			}
+
+				} else {
+					for(ImageView block:entitysWorld2) {
+						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
+							selectedEntityOnWorld1=false;
+							selectedEntity = Loader.world2.getEntity((int)(me.getX()/32),(int)(me.getY()/32));
+							selectedEntityTextureId.setValue(""+block.getId());
+							selectedEntityTexture=block;
+							System.out.println(selectedEntity);
+							System.out.println(block.getId());
+
+
+
+						}			
+					}		
+				}	
+			}		
+		}
+
+
+	}
+
+	private void selectEntity() {
+		if(selectedEntity instanceof TileEntityTP) {
+			TileEntityTP entity = (TileEntityTP)selectedEntity;
+			tab1.setText(""+entity.getX());
+			tab2.setText(""+entity.getY());
+			tab3.setText(entity.getTPmapName());
+			tab4.setText(""+entity.getTPCoordonnees().getX());
+			tab5.setText(""+entity.getTPCoordonnees().getY());
 		}
 	}
 
@@ -279,7 +416,7 @@ public class Controleur implements Initializable{
 		textureLoading();
 		eventHandler();
 
-		leftTable.setEditable(false);
+
 		//TODO
 
 	}
@@ -296,7 +433,6 @@ public class Controleur implements Initializable{
 				resize(topWorld1, Loader.world1.getWidth()*32, Loader.world1.getHeight()*32);
 				resize(entityWorld1, Loader.world1.getWidth()*32, Loader.world1.getHeight()*32);
 				printCalqueTile(backgroundWorld1,solidWorld1,topWorld1,Loader.world1);
-				entitysWorld1=new ArrayList<ImageView>();
 				loadEntitys(entitysWorld1, Loader.world1.getEntity());
 				printCalqueEntitys(entitysWorld1, entityWorld1);
 
@@ -309,7 +445,6 @@ public class Controleur implements Initializable{
 				resize(topWorld2, Loader.world2.getWidth()*32, Loader.world2.getHeight()*32);
 				resize(entityWorld2, Loader.world2.getWidth()*32, Loader.world2.getHeight()*32);
 				printCalqueTile(backgroundWorld2,solidWorld2,topWorld2,Loader.world2);
-				entitysWorld2=new ArrayList<ImageView>();
 				loadEntitys(entitysWorld2, Loader.world2.getEntity());
 				printCalqueEntitys(entitysWorld2, entityWorld2);
 
@@ -355,6 +490,10 @@ public class Controleur implements Initializable{
 		resize(toolBar, 200,200);
 		resize(world1, 32,32);
 		resize(world2, 32,32);
+
+		selectedEntityTextureId=new SimpleStringProperty();
+		entitysWorld1=new ArrayList<ImageView>();
+		entitysWorld2=new ArrayList<ImageView>();
 	}
 
 	private void eventHandler() {
@@ -386,6 +525,38 @@ public class Controleur implements Initializable{
 		world2.setOnMouseReleased(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world2);}});
 		world1.setOnMouseDragged(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world1);}});
 		world2.setOnMouseDragged(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world2);}});
+
+		selectedEntityTextureId.addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				try {
+					if(!entitysWorld1.isEmpty())
+						for(ImageView img:entitysWorld1) {
+
+							if(oldValue!=null && img.getId().equals(oldValue)) 
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+
+							else if(img.getId().equals(newValue)) 
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP2.png").toURI().toURL()), null));
+
+						}
+					if(!entitysWorld2.isEmpty())
+						for(ImageView img:entitysWorld2) {
+
+							if(oldValue!=null && img.getId().equals(oldValue)) 
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+
+							else if(img.getId().equals(newValue)) 
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP2.png").toURI().toURL()), null));
+
+
+						}
+					selectEntity();
+				}catch (IOException | URISyntaxException e) {e.printStackTrace();}
+			}
+
+		});
 
 		try {
 			//Tools
@@ -427,7 +598,7 @@ public class Controleur implements Initializable{
 
 			selectedEntityType = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/select.png").toURI().toURL()), null));
 			toolBar.getChildren().add(selectedEntityType);
-			selectedEntityType.relocate(9, 88);
+			selectedEntityType.relocate(9, 88);		
 
 
 		} catch (IOException | URISyntaxException e) {
@@ -466,7 +637,9 @@ public class Controleur implements Initializable{
 	private void printCalqueEntitys(ArrayList<ImageView> entitysImage, Pane pane) {
 		pane.getChildren().clear();
 		for(ImageView entityImage:entitysImage) {
+			entityImage.setId(""+idImageView);
 			pane.getChildren().add(entityImage);
+			idImageView++;
 		}
 	}
 

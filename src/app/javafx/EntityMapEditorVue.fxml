@@ -6,9 +6,8 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.TilePane?>
@@ -74,12 +73,20 @@
       </TabPane>
       <Pane fx:id="toolBar" layoutX="716.0" prefHeight="638.0" prefWidth="190.0">
          <children>
-            <TableView layoutX="-1.0" layoutY="358.0" prefHeight="1600.0" prefWidth="190.0">
-              <columns>
-                <TableColumn fx:id="leftTable" prefWidth="95.0" />
-                <TableColumn fx:id="rightTable" prefWidth="94.0" />
-              </columns>
-            </TableView>
+            <Label fx:id="label1" layoutX="51.0" layoutY="435.0" text="x :" />
+            <TextField fx:id="tab1" layoutX="74.0" layoutY="431.0" prefHeight="25.0" prefWidth="102.0" />
+            <TextField fx:id="tab2" layoutX="74.0" layoutY="456.0" prefHeight="25.0" prefWidth="102.0" />
+            <TextField fx:id="tab3" layoutX="74.0" layoutY="481.0" prefHeight="25.0" prefWidth="102.0" />
+            <TextField fx:id="tab4" layoutX="74.0" layoutY="506.0" prefHeight="25.0" prefWidth="102.0" />
+            <TextField fx:id="tab5" layoutX="74.0" layoutY="531.0" prefHeight="25.0" prefWidth="102.0" />
+            <TextField fx:id="tab6" layoutX="74.0" layoutY="556.0" prefHeight="25.0" prefWidth="102.0" />
+            <Label fx:id="label2" layoutX="51.0" layoutY="460.0" text="y :" />
+            <Label fx:id="label3" layoutX="15.0" layoutY="485.0" text="TP World :" />
+            <Label fx:id="label4" layoutX="29.0" layoutY="510.0" text="TP x :" />
+            <Label fx:id="label5" layoutX="29.0" layoutY="535.0" text="TP y :" />
+            <Label fx:id="label6" layoutX="29.0" layoutY="560.0" text="Label" />
+            <Button layoutX="125.0" layoutY="599.0" mnemonicParsing="false" onAction="#saveEntity" text="Save" />
+            <Button fx:id="deleteEntity" layoutX="57.0" layoutY="599.0" mnemonicParsing="false" onAction="#deleteEntity" text="Delete" />
          </children>
       </Pane>
    </children>
