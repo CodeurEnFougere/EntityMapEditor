@@ -2,40 +2,57 @@ package app.api;
 
 import java.util.ArrayList;
 
+import app.api.entity.Entity;
+import app.api.tile.Tile;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-public class World {
+public class WorldData {
 	
 	private StringProperty zoneName;
 	private Tile tileGround[][];
 	private Tile tiles[][];
 	private Tile tilesTop[][];
-	private ArrayList<Entity> entity;
+	public ObservableList<Entity> entity;
 	private int width,height;
+	private boolean outSide;
 	
-	public World(String zoneName, int width, int height, Tile ground[][], Tile tiles[][], Tile tilesTop[][], ArrayList<Entity> entity) {
+	public WorldData(String zoneName, int width, int height, boolean outside, Tile ground[][], Tile tiles[][], Tile tilesTop[][], ArrayList<Entity> entitys) {
 		this.zoneName=new SimpleStringProperty(zoneName);
 		this.width=width;
 		this.height=height;
+		this.outSide=outside;
 		this.tileGround=ground;
 		this.tiles=tiles;
 		this.tilesTop=tilesTop;
-		this.entity=entity;
+		this.entity= FXCollections.observableArrayList();
+		for(Entity e : entitys)
+			this.entity.add(e);
+	
 	}
 	
-	public void newWorld(String zoneName, int width, int height, Tile ground[][], Tile tiles[][], Tile tilesTop[][], ArrayList<Entity> entity) {
+	public void newWorld(String zoneName, int width, int height, boolean outside, Tile ground[][], Tile tiles[][], Tile tilesTop[][], ArrayList<Entity> entitys) {
 		this.width=width;
 		this.height=height;
+		this.outSide=outside;
 		this.tileGround=ground;
 		this.tiles=tiles;
 		this.tilesTop=tilesTop;
-		this.entity=entity;
+		this.entity = FXCollections.observableArrayList();
+		for(Entity e : entitys)
+			this.entity.add(e);
+		
 		this.zoneName.setValue(zoneName);
 	}
 	
 	public String getName() {
 		return this.zoneName.get();
+	}
+	
+	public boolean isOutside() {
+		return this.outSide;
 	}
 	
 	public StringProperty getNameProperty() {
@@ -62,16 +79,20 @@ public class World {
 			return tilesTop[x][y];
 	}
 	
+	public ObservableList<Entity> getEntity(){
+		return this.entity;
+	}
+	
+	public Entity[] entityHere(double x,double y) {
+		return null;
+	}
+
 	public Entity getEntity(double x, double y) {
 		for(Entity entity:this.entity) {
-			if(entity.getX()==x && entity.getY()==y)
+			if(entity.coordonnes.getX()==x && entity.coordonnes.getY()==y)
 				return entity;
 		}
 		return null;
-	}
-	
-	public ArrayList<Entity> getEntity(){
-		return this.entity;
-	}
+}
 	
 }

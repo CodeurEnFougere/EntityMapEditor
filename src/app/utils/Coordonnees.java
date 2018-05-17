@@ -1,4 +1,4 @@
-package app.api;
+package app.utils;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -7,8 +7,8 @@ public class Coordonnees {
 	private DoubleProperty x,y;
 	
 	public Coordonnees(double x, double y) {
-		this.x= new SimpleDoubleProperty(x);
-		this.y= new SimpleDoubleProperty(y);
+		this.x = new SimpleDoubleProperty(x);
+		this.y = new SimpleDoubleProperty(y);
 	}
 	
 	public DoubleProperty getXpro() {
@@ -39,6 +39,11 @@ public class Coordonnees {
 	public void setCoordoner(double x, double y) {
 		this.x.set(x);
 		this.y.set(y);
+	}
+	
+	public boolean isSame(double x,double y) {
+		return (int)this.x.get() == (int)x && 
+				(int)this.y.get() == (int)y;
 	}
 	
 	public String toString() {

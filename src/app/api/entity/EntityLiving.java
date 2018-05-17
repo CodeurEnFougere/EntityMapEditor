@@ -1,30 +1,27 @@
-package app.api;
+package app.api.entity;
 
+import app.utils.Coordonnees;
+import app.utils.Direction;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class EntityLiving extends Entity{
+public abstract class EntityLiving extends Entity{
 	
 	//La direction du regard
-	protected Direction direction;
 	protected IntegerProperty PV;
 	protected IntegerProperty maxPv;	
 	
-	public EntityLiving(Coordonnees position, Direction direction) {
-		super(position);
-		this.direction=direction;
+	public EntityLiving(int id,Coordonnees position, Direction direction) {
+		super(id,position,direction);
+		
 		PV=new SimpleIntegerProperty(12);
 		maxPv=new SimpleIntegerProperty(12);
 	}
 	
-	public EntityLiving(Coordonnees position, Direction direction, int pv) {
-		super(position);
+	public EntityLiving(int id,Coordonnees position, Direction direction, int pv) {
+		super(id,position,direction);
 		this.direction=direction;
 		PV.set(pv);
-	}
-	
-	public Direction getOrientation() {
-		return this.direction;
 	}
 	
 	public void setDirection(Direction direction) {
@@ -52,4 +49,6 @@ public class EntityLiving extends Entity{
 	public IntegerProperty getMaxPv() {
 		return this.maxPv;
 	}
+	
+	//deplacement
 }

@@ -7,28 +7,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import app.api.Coordonnees;
-import app.api.Direction;
-import app.api.Entity;
-import app.api.EntityLiving;
-import app.api.Tile;
-import app.api.TileEntity;
-import app.api.TileEntityTP;
-import app.api.World;
+import app.api.WorldData;
+import app.api.entity.Entity;
+import app.api.entity.EntityTP;
+import app.api.tile.Tile;
+import app.api.tile.TileFactory;
 
-public class Loader {
+public class World {
 	
-	public static World world1;
-	public static World world2;
+	public static WorldData world1;
+	public static WorldData world2;
 	
 	public static void loadWorld(String file, boolean isWorld1) {
 		try {
+			TileFactory.load();
 			//Chargement des tiles
 			BufferedReader tilesData = new BufferedReader(new FileReader(new File("ressources/map/"+file+".map").getAbsolutePath()));
 
 			String name = tilesData.readLine();
 			int width = Integer.parseInt(tilesData.readLine());
 			int height = Integer.parseInt(tilesData.readLine());
+			boolean isOutside = Boolean.parseBoolean(tilesData.readLine());
 
 
 			Tile[][] tileGround = makeTileGrid(width, height, tilesData);
@@ -39,9 +38,9 @@ public class Loader {
 
 			tilesData.close();
 			if(isWorld1)
-				world1=new World(name, width, height, tileGround, tileSolid, tileTop, loadEntity(file));
+				world1=new WorldData(name, width, height, isOutside, tileGround, tileSolid, tileTop, loadEntity(file));
 			else
-				world2=new World(name, width, height, tileGround, tileSolid, tileTop, loadEntity(file));
+				world2=new WorldData(name, width, height, isOutside, tileGround, tileSolid, tileTop, loadEntity(file));
 
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -69,23 +68,21 @@ public class Loader {
 				int idTileEntity=Integer.parseInt(entityData.readLine());
 				entityData.readLine();
 				
-				entity.add(new TileEntity(idTileEntity, new Coordonnees(x, y), etatTileEntity));
 				break;
 				
 			case "EntityLiving":
 				int etatEntityLiving= Integer.parseInt(entityData.readLine());
 				Direction directionEntityLiving=new Direction(Integer.parseInt(entityData.readLine()));
 				entityData.readLine();
-			
-				entity.add(new EntityLiving(new Coordonnees(x, y), directionEntityLiving, etatEntityLiving));
+
 				break;
 				
 			case "TileEntityTP":
 				boolean etatTileEntityTP= Boolean.parseBoolean(entityData.readLine());
 				String mapTP = entityData.readLine();
 				double xTP=Double.parseDouble(entityData.readLine());
-				double yTP=Double.parseDouble(entityData.readLine());//TODO 1-> tpid
-				entity.add(new TileEntityTP(0, new Coordonnees(x, y), etatTileEntityTP, mapTP, new Coordonnees(xTP, yTP)));
+				double yTP=Double.parseDouble(entityData.readLine());
+				entity.add(new EntityTP(0, new Coordonnees(x, y), new Direction(Direction.North), etatTileEntityTP, mapTP, new Coordonnees(xTP, yTP)));
 				break;
 			}
 			
@@ -98,6 +95,8 @@ public class Loader {
 		return entity;
 	}
 	
+	
+	
 
 	/*
 	 * Chargement d'un Tableau de Tile utilis� par la fonction loadWorld();
@@ -109,7 +108,7 @@ public class Loader {
 			for(int i = 0; i < height;i++) {
 				String[] tabGround = pat.split(new StringBuilder(br.readLine()));
 				for(int x = 0; x < tabGround.length ; x++)
-					tile[i][x] = new Tile(Integer.parseInt(tabGround[x]));
+					tile[i][x] = TileFactory.get(Integer.parseInt(tabGround[x]));
 			}
 			return tile;
 		}catch(IOException e) {
