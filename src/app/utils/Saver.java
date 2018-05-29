@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import app.api.WorldData;
-import app.api.entity.Entity;
-import app.api.entity.EntityLiving;
-import app.api.entity.EntityTP;
-import app.api.entity.TileEntity;
+import game.modele.entity.Entity;
+import game.modele.entity.EntityTP;
+import game.modele.entity.living.EntityLiving;
+import game.modele.entity.tileEntity.TileEntity;
+import game.modele.world.WorldData;
 
 public class Saver {
 	

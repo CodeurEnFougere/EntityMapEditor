@@ -11,16 +11,16 @@ import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 
 import app.EntityMapEditor;
-import app.api.TextureLoader;
-import app.api.WorldData;
-import app.api.entity.Entity;
-import app.api.entity.EntityLiving;
-import app.api.entity.EntityTP;
-import app.api.entity.TileEntity;
-import app.utils.Coordonnees;
-import app.utils.Direction;
 import app.utils.Saver;
+import app.utils.TextureLoader;
 import app.utils.World;
+import game.modele.entity.Entity;
+import game.modele.entity.EntityTP;
+import game.modele.entity.living.EntityLiving;
+import game.modele.entity.tileEntity.TileEntity;
+import game.modele.utils.Coordonnees;
+import game.modele.utils.Direction;
+import game.modele.world.WorldData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -181,7 +181,7 @@ public class Controleur implements Initializable{
 				entitysWorld1.add(img);
 				entityWorld1.getChildren().add(img);
 				if(selectedEntity instanceof EntityTP) {
-					World.world1.getEntity().add(new EntityTP(1, new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), new Direction(Direction.North),true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
+					World.world1.getEntity().add(new EntityTP( new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), new Direction(Direction.North),true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
 				}
 				
 			}else {
@@ -195,7 +195,7 @@ public class Controleur implements Initializable{
 				entitysWorld2.add(img);
 				entityWorld2.getChildren().add(img);
 				if(selectedEntity instanceof EntityTP) {
-					World.world2.getEntity().add(new EntityTP(1, new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), new Direction(Direction.North),true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
+					World.world2.getEntity().add(new EntityTP(new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), new Direction(Direction.North),true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
 				}
 			}
 			selectedEntityTexture=null;
@@ -345,7 +345,7 @@ public class Controleur implements Initializable{
 				isEvent=false;
 				System.out.println("Event false");
 				try {
-					newEntity = new EntityTP(1, tpCoordonnees, new Direction(Direction.North),true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
+					newEntity = new EntityTP( tpCoordonnees, new Direction(Direction.North),true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
 					System.out.println("new entity :"+newEntity);		
 
 					ImageView img;
@@ -372,7 +372,7 @@ public class Controleur implements Initializable{
 					for(ImageView block:entitysWorld1) {
 						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
 							selectedEntityOnWorld1=true;
-							selectedEntity = World.world1.getEntity((int)(me.getX()/32),(int)(me.getY()/32));
+							selectedEntity = World.world1.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0];
 							selectedEntityTextureId.setValue(""+block.getId());
 							selectedEntityTexture=block;
 							System.out.println(selectedEntity);
@@ -385,7 +385,7 @@ public class Controleur implements Initializable{
 					for(ImageView block:entitysWorld2) {
 						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
 							selectedEntityOnWorld1=false;
-							selectedEntity = World.world2.getEntity((int)(me.getX()/32),(int)(me.getY()/32));
+							selectedEntity = World.world2.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0];
 							selectedEntityTextureId.setValue(""+block.getId());
 							selectedEntityTexture=block;
 							System.out.println(selectedEntity);
@@ -429,7 +429,7 @@ public class Controleur implements Initializable{
 		try {
 			if(isWorld1) {
 				entityWorld1.getChildren().clear();
-				World.loadWorld(worldName, true);	
+				World.loadWorld(worldName, isWorld1);	
 				resize(world1, World.world1.getWidth()*32, World.world1.getHeight()*32);
 				resize(backgroundWorld1, World.world1.getWidth()*32, World.world1.getHeight()*32);
 				resize(solidWorld1, World.world1.getWidth()*32, World.world1.getHeight()*32);
@@ -441,7 +441,7 @@ public class Controleur implements Initializable{
 
 			}else {
 				entityWorld2.getChildren().clear();
-				World.loadWorld(worldName, false);	
+				World.loadWorld(worldName, isWorld1);	
 				resize(world2, World.world2.getWidth()*32, World.world2.getHeight()*32);
 				resize(backgroundWorld2, World.world2.getWidth()*32, World.world2.getHeight()*32);
 				resize(solidWorld2, World.world2.getWidth()*32, World.world2.getHeight()*32);
@@ -467,20 +467,24 @@ public class Controleur implements Initializable{
 
 		for(Entity entity:observableList) {
 			ImageView entityImage;
+			System.out.println(entity.getId());
+			try {
+				if(entity instanceof EntityTP) {
 
-			if(entity instanceof EntityTP) {
-				try {
 					entityImage = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
 					entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
 					entitysImage.add(entityImage);
-				}catch (IOException | URISyntaxException e) {
-					e.printStackTrace();
+
+
+				}else if(entity instanceof EntityLiving) {
+					entityImage = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
+					entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
+					entitysImage.add(entityImage);
+				}else if(entity instanceof TileEntity) {
+
 				}
-
-			}else if(entity instanceof EntityLiving) {
-
-			}else if(entity instanceof TileEntity) {
-
+			}catch (IOException | URISyntaxException e) {
+				e.printStackTrace();
 			}
 		}		
 	}
