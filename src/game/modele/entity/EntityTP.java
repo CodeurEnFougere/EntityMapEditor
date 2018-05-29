@@ -8,7 +8,7 @@ public class EntityTP extends TileEntity{
 	private Coordonnees tpCoordonnees;
 	private String mapNameTp;
 
-	public EntityTP(Coordonnees coordonerPosition,Direction direction, boolean etat, String mapNameTp, Coordonnees tpCoordonnees) {
+	public EntityTP(Coordonnees coordonerPosition, Direction direction, boolean etat, String mapNameTp, Coordonnees tpCoordonnees) {
 		super("EntityTP", coordonerPosition,direction, etat);
 		this.tpCoordonnees=tpCoordonnees;
 		this.mapNameTp=mapNameTp;

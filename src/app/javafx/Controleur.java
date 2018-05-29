@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -15,6 +16,7 @@ import app.utils.Saver;
 import app.utils.TextureLoader;
 import app.utils.World;
 import game.modele.entity.Entity;
+import game.modele.entity.EntityFactory;
 import game.modele.entity.EntityTP;
 import game.modele.entity.living.EntityLiving;
 import game.modele.entity.tileEntity.EntityLight;
@@ -99,39 +101,37 @@ public class Controleur implements Initializable{
 
 	@FXML
 	private TextField tab1;
-
 	@FXML
 	private TextField tab2;
-
 	@FXML
 	private TextField tab3;
-
 	@FXML
 	private TextField tab4;
-
 	@FXML
 	private TextField tab5;
-
 	@FXML
 	private TextField tab6;
+	@FXML
+	private TextField tab7;
+	@FXML
+	private TextField tab8;
 
 	@FXML
 	private Label label1;
-
 	@FXML
 	private Label label2;
-
 	@FXML
 	private Label label3;
-
 	@FXML
 	private Label label4;
-
 	@FXML
 	private Label label5;
-
 	@FXML
 	private Label label6;
+	@FXML
+	private Label label7;
+	@FXML
+	private Label label8;
 
 	ImageView selectedTool;
 	ImageView selectedEntityType;
@@ -142,6 +142,7 @@ public class Controleur implements Initializable{
 	Map<Integer,Image> dicoImageTileTextureMap = new HashMap<>();
 
 	Entity selectedEntity;
+	Entity selectedEntityLast;
 	boolean selectedEntityOnWorld1;
 	StringProperty selectedEntityTextureId;
 	ImageView selectedEntityTexture;
@@ -172,38 +173,55 @@ public class Controleur implements Initializable{
 	void saveEntity(ActionEvent event) {
 		if(selectedEntityTexture!=null)
 		try {
+			ImageView img = new ImageView(selectedEntityTexture.getImage());
+			
 			if(selectedEntityOnWorld1) {
 				World.world1.getEntity().remove(selectedEntity);
 				entitysWorld1.remove(selectedEntityTexture);
 				entityWorld1.getChildren().remove(selectedEntityTexture);
-				ImageView img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
-				img.relocate(Double.parseDouble(tab1.getText())*32, Double.parseDouble(tab2.getText())*32);
+				img.relocate(Double.parseDouble(tab2.getText())*32, Double.parseDouble(tab3.getText())*32);
 				img.setId(""+idImageView);
 				idImageView++;
 				entitysWorld1.add(img);
 				entityWorld1.getChildren().add(img);
-				if(selectedEntity instanceof EntityTP) {
-					World.world1.getEntity().add(new EntityTP( new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), new Direction(Direction.North),true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
-				}
+				System.out.println(tab8.getText().length()+" "+tab8.getText());
+				World.world1.getEntity().add( EntityFactory.create( 
+						 tab1.getText(),
+						(tab2.getText().length()>0?""+tab2.getText():"")+
+						(tab3.getText().length()>0?","+tab3.getText():"")+
+						(tab4.getText().length()>0?","+tab4.getText():"")+
+						(tab5.getText().length()>0?","+tab5.getText():"")+
+						(tab6.getText().length()>0?","+tab6.getText():"")+
+						(tab7.getText().length()>0?","+tab7.getText():"")+
+						(tab8.getText().length()>0?","+tab8.getText():"") ));
+				
 				
 			}else {
 				World.world2.getEntity().remove(selectedEntity);
 				entitysWorld2.remove(selectedEntityTexture);
 				entityWorld2.getChildren().remove(selectedEntityTexture);
-				ImageView img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
-				img.relocate(Double.parseDouble(tab1.getText())*32, Double.parseDouble(tab2.getText())*32);
+				img.relocate(Double.parseDouble(tab2.getText())*32, Double.parseDouble(tab3.getText())*32);
 				img.setId(""+idImageView);
 				idImageView++;
 				entitysWorld2.add(img);
 				entityWorld2.getChildren().add(img);
-				if(selectedEntity instanceof EntityTP) {
-					World.world2.getEntity().add(new EntityTP(new Coordonnees(Double.parseDouble(tab1.getText()), Double.parseDouble(tab2.getText())), new Direction(Direction.North),true, tab3.getText(), new Coordonnees(Double.parseDouble(tab4.getText()), Double.parseDouble(tab5.getText()))));	
-				}
+				World.world2.getEntity().add( EntityFactory.create( 
+						 tab1.getText(),
+						(tab2.getText().length()>0?""+tab2.getText():"")+
+						(tab3.getText().length()>0?","+tab3.getText():"")+
+						(tab4.getText().length()>0?","+tab4.getText():"")+
+						(tab5.getText().length()>0?","+tab5.getText():"")+
+						(tab6.getText().length()>0?","+tab6.getText():"")+
+						(tab7.getText().length()>0?","+tab7.getText():"")+
+						(tab8.getText().length()>0?","+tab8.getText():"") ));
+						
 			}
+			
 			selectedEntityTexture=null;
+			
 		}catch(Exception e) {
 			alert.setAlertType(AlertType.ERROR);
-			alert.setContentText("Un des champs");
+			alert.setContentText("Un des champs n'est pas valide");
 			alert.show();
 			e.printStackTrace();
 		}
@@ -230,6 +248,8 @@ public class Controleur implements Initializable{
 			tab4.clear();
 			tab5.clear();
 			tab6.clear();
+			tab7.clear();
+			tab8.clear();
 		}
 	}
 
@@ -346,7 +366,7 @@ public class Controleur implements Initializable{
 				isEvent=false;
 				try {
 					newEntity = new EntityTP( tpCoordonnees, new Direction(Direction.North),true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
-					System.out.println("new entity :"+newEntity);		
+					System.out.println("New entity : "+newEntity);		
 
 					ImageView img;
 
@@ -372,6 +392,7 @@ public class Controleur implements Initializable{
 					for(ImageView block:entitysWorld1) {
 						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
 							selectedEntityOnWorld1=true;
+							selectedEntityLast=selectedEntity;
 							selectedEntity = World.world1.entityHere((int)(me.getX()/32),(int)(me.getY()/32)).length >= 1?World.world1.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0]:null;
 							selectedEntityTextureId.setValue(""+block.getId());
 							selectedEntityTexture=block;
@@ -385,6 +406,7 @@ public class Controleur implements Initializable{
 					for(ImageView block:entitysWorld2) {
 						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
 							selectedEntityOnWorld1=false;
+							selectedEntityLast=selectedEntity;
 							selectedEntity = World.world2.entityHere((int)(me.getX()/32),(int)(me.getY()/32)).length>=1?World.world2.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0]:null;
 							selectedEntityTextureId.setValue(""+block.getId());
 							selectedEntityTexture=block;
@@ -403,43 +425,70 @@ public class Controleur implements Initializable{
 	}
 
 	private void selectEntity() {
+		
+		label1.setLayoutX(31);
+		label2.setLayoutX(51);
+		label3.setLayoutX(51);
+		label4.setLayoutX(7);
+		label5.setLayoutX(31);
+		
+		label1.setText("Type :");
+		label2.setText("x :");
+		label3.setText("y :");
+		label4.setText("Direction :");
+		
+		tab1.setText(selectedEntity.getId());
+		tab2.setText(""+selectedEntity.coordonnes.getX());
+		tab3.setText(""+selectedEntity.coordonnes.getY());
+		tab4.setText(""+selectedEntity.direction.getDirection());
+		
+		
 		if(selectedEntity instanceof EntityTP) {
 			EntityTP entity = (EntityTP)selectedEntity;
-			label1.setLayoutX(51);
-			label2.setLayoutX(51);
-			label3.setLayoutX(7);
-			label1.setText("x :");
-			label2.setText("y :");
-			label3.setText("Tp World :");
-			label4.setText("Tp x :");
-			label5.setText("Tp y :");
-			label6.setText("");
-			tab1.setText(""+selectedEntity.coordonnes.getX());
-			tab2.setText(""+selectedEntity.coordonnes.getY());
-			tab3.setText(entity.getTPmapName());
-			tab4.setText(""+entity.getTPCoordonnees().getX());
-			tab5.setText(""+entity.getTPCoordonnees().getY());
+			
+			label6.setLayoutX(15);
+			label7.setLayoutX(29);
+			label8.setLayoutX(29);
+			
+			label5.setText("Etat :");
+			label6.setText("Tp World :");
+			label7.setText("Tp x :");
+			label8.setText("Tp y :");
+			
+			tab5.setText(""+entity.getEtat());
+			tab6.setText(entity.getTPmapName());
+			tab7.setText(""+entity.getTPCoordonnees().getX());
+			tab8.setText(""+entity.getTPCoordonnees().getY());
+			
 		}else if(selectedEntity instanceof EntityLight) {
 			EntityLight entity = (EntityLight)selectedEntity;
-			label2.setLayoutX(51);
-			label3.setLayoutX(51);
-			label4.setLayoutX(0);
-			label5.setLayoutX(29);
-			label1.setText("Type :");
-			label2.setText("x :");
-			label3.setText("y :");
-			label4.setText("Direction :");
-			label5.setText("Light :");
-			label6.setText("");
-			tab1.setText(entity.getId());
-			tab2.setText(""+selectedEntity.coordonnes.getX());
-			tab3.setText(""+selectedEntity.coordonnes.getY());
-			tab4.setText(""+selectedEntity.direction.getDirection());
-			tab5.setText(""+entity.lightLvl);
+			
+			label6.setLayoutX(31);
+				
+			label5.setText("Etat :");
+			label6.setText("Light :");
+			label7.setText("");
+			label8.setText("");
+			
+			tab5.setText(""+entity.getEtat());
+			tab6.setText(""+entity.lightLvl);
+			tab7.setText("");
+			tab8.setText("");
 			
 		}else if(selectedEntity instanceof EntityLiving) {
-			tab1.setText(""+selectedEntity.coordonnes.getX());
-			tab2.setText(""+selectedEntity.coordonnes.getY());
+			EntityLiving entity = (EntityLiving)selectedEntity;
+			label5.setLayoutX(35);
+			label6.setLayoutX(31);
+
+			label5.setText("PV :");
+			label6.setText("");
+			label7.setText("");
+			label8.setText("");
+
+			tab5.setText(""+entity.getPV());
+			tab6.setText("");
+			tab7.setText("");
+			tab8.setText("");
 		}
 	}
 
@@ -455,6 +504,7 @@ public class Controleur implements Initializable{
 
 		try {
 			if(isWorld1) {
+				entitysWorld1.clear();
 				entityWorld1.getChildren().clear();
 				backgroundWorld1.getChildren().clear();
 				solidWorld1.getChildren().clear();
@@ -475,6 +525,7 @@ public class Controleur implements Initializable{
 				printCalqueEntitys(entitysWorld1, entityWorld1);
 
 			}else {
+				entitysWorld2.clear();
 				entityWorld2.getChildren().clear();
 				backgroundWorld2.getChildren().clear();
 				solidWorld2.getChildren().clear();
@@ -593,11 +644,32 @@ public class Controleur implements Initializable{
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				try {
+					String start="";
+					
+						if(selectedEntityLast instanceof EntityTP) {
+							start="EntityTP";
+						}else if(selectedEntityLast != null){
+							String path = selectedEntityLast.getClass().getSuperclass().getName();
+							int currentChar = path.length()-1;
+							String end="";
+
+							while (!(""+path.charAt(currentChar)).equals(".") && currentChar>=0) {
+								end+=path.charAt(currentChar);
+								currentChar--;
+							}
+							currentChar=end.length()-1;
+							while(currentChar>=0) {
+								start+=end.charAt(currentChar);
+								currentChar--;
+							}
+						}
+					System.out.println(start);
+					
 					if(!entitysWorld1.isEmpty())
 						for(ImageView img:entitysWorld1) {
 
 							if(oldValue!=null && img.getId().equals(oldValue)) 
-								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/"+start+".png").toURI().toURL()), null));
 
 							else if(img.getId().equals(newValue)) 
 								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP2.png").toURI().toURL()), null));
@@ -607,7 +679,7 @@ public class Controleur implements Initializable{
 						for(ImageView img:entitysWorld2) {
 
 							if(oldValue!=null && img.getId().equals(oldValue)) 
-								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/"+start+".png").toURI().toURL()), null));
 
 							else if(img.getId().equals(newValue)) 
 								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP2.png").toURI().toURL()), null));
@@ -710,12 +782,12 @@ public class Controleur implements Initializable{
 	}
 
 	//Permet d'afficher dans dans chaque pane toute les textures de chaque couches de la map
-		private void printCalqueTile(Pane pane,Pane paneTile,Pane paneTop, WorldData currentMap) {
+	private void printCalqueTile(Pane pane,Pane paneTile,Pane paneTop, WorldData currentMap) {
 
-			for(int y=0;y<currentMap.getHeight();y++) {
-				for(int x=0;x<currentMap.getWidth();x++) {
+		for(int y=0;y<currentMap.getHeight();y++) {
+			for(int x=0;x<currentMap.getWidth();x++) {
 
-					if(currentMap.getTileTerrain(y, x) != null) {
+				if(currentMap.getTileTerrain(y, x) != null) {
 					ImageView tile = new ImageView(dicoImageTileTextureMap.get(currentMap.getTileTerrain(y, x).getId()));	
 					tile.setX(x*32);
 					tile.setY(y*32);
@@ -730,11 +802,11 @@ public class Controleur implements Initializable{
 					tile.setX(x*32);
 					tile.setY(y*32);
 					paneTop.getChildren().add(tile);
-					}
-
 				}
+
 			}
 		}
+	}
 
 	private void resize(Pane pane, double x, double y) {
 		pane.setMinWidth(x);
