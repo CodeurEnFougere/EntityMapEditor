@@ -8,6 +8,7 @@ import java.io.IOException;
 import game.modele.entity.Entity;
 import game.modele.entity.EntityTP;
 import game.modele.entity.living.EntityLiving;
+import game.modele.entity.tileEntity.EntityLight;
 import game.modele.entity.tileEntity.TileEntity;
 import game.modele.world.WorldData;
 
@@ -19,12 +20,15 @@ public class Saver {
 			BufferedWriter entitysData = new BufferedWriter(new FileWriter(new File("ressources/map/"+world.getName()+".entity").getAbsolutePath()));
 				
 			for(Entity curEntity:world.getEntity()) {
-
+				
+				
+				
 				if(curEntity instanceof EntityTP) {
-					EntityTP entity=(EntityTP) curEntity;
-					entitysData.write("TileEntityTP");entitysData.newLine();
+					EntityTP entity=(EntityTP) curEntity;	
+					entitysData.write("Tile"+curEntity.getId());entitysData.newLine();
 					entitysData.write(""+entity.coordonnes.getX());
 					entitysData.write(","+entity.coordonnes.getY());
+					entitysData.write(","+entity.direction.getDirection());
 					entitysData.write(","+entity.getEtat());
 					entitysData.write(","+entity.getTPmapName());
 					entitysData.write(","+entity.getTPCoordonnees().getX());
@@ -32,21 +36,31 @@ public class Saver {
 				
 				}else if(curEntity instanceof EntityLiving) {
 					EntityLiving entity=(EntityLiving) curEntity;
-					entitysData.write("EntityLiving");entitysData.newLine();
-					entitysData.write(","+entity.coordonnes.getX());
+					entitysData.write(curEntity.getId());entitysData.newLine();
+					entitysData.write(""+entity.coordonnes.getX());
 					entitysData.write(","+entity.coordonnes.getY());
-					entitysData.write(","+entity.getPV());
-					entitysData.write(","+entity.direction);
-					entitysData.write(",");entitysData.newLine();
+					entitysData.write(","+entity.direction.getDirection());
+					entitysData.write(","+entity.getPV().get());
+					entitysData.newLine();
 				
+				}else if(curEntity instanceof EntityLight) {
+					EntityLight entity=(EntityLight) curEntity;
+					entitysData.write(curEntity.getId());entitysData.newLine();
+					entitysData.write(""+entity.coordonnes.getX());
+					entitysData.write(","+entity.coordonnes.getY());
+					entitysData.write(","+entity.direction.getDirection());
+					entitysData.write(","+entity.getEtat());
+					entitysData.write(","+entity.lightLvl);
+					entitysData.newLine();
 				}else if(curEntity instanceof TileEntity) {
 						TileEntity entity=(TileEntity) curEntity;
-						entitysData.write("TileEntity");entitysData.newLine();
-						entitysData.write(","+entity.coordonnes.getX());
+						entitysData.write(curEntity.getId());entitysData.newLine();
+						entitysData.write(""+entity.coordonnes.getX());
 						entitysData.write(","+entity.coordonnes.getY());
 						entitysData.write(","+entity.getEtat());
-						entitysData.write(",North");entitysData.newLine();
-					}
+						entitysData.write(","+entity.direction.getDirection());
+						entitysData.newLine();
+				}
 			}
 			
 			entitysData.close();

@@ -30,10 +30,6 @@ public class WorldData {
 	public WorldData(String zoneName, int width, int height, boolean outside, Tile ground[][], Tile tiles[][], Tile tilesTop[][], ArrayList<Entity> entitys) {
 		this.entity = FXCollections.observableArrayList();
 		this.luminosity = new SimpleIntegerProperty[width][height];
-		newWorld(zoneName, width, height, outside, ground, tiles, tilesTop, entitys);
-	}
-
-	public void newWorld(String zoneName, int width, int height, boolean outside, Tile ground[][], Tile tiles[][], Tile tilesTop[][], ArrayList<Entity> entitys) {
 		Entity.key=0;
 		this.width=width;
 		this.height=height;

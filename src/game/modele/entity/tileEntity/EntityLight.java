@@ -7,15 +7,12 @@ import game.modele.utils.Direction;
 
 public abstract class EntityLight extends TileEntity{
 
-	protected int lightLvl;
+	public int lightLvl;
+	
 	private boolean f = true;
 	public EntityLight(String id, Coordonnees coordoner, Direction direction, boolean etat, int lightLvl) {
 		super(id, coordoner, direction, etat);
-		this.lightLvl = lightLvl;
-		
-		
-				
-		
+		this.lightLvl = lightLvl;	
 		
 	}
 

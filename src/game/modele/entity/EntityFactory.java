@@ -11,7 +11,8 @@ import game.modele.utils.Direction;
 
 public class EntityFactory {
 
-	public static Entity create(String id, String params) {
+	public static Entity create(String id, String param) {
+		String[] params = param.split(",");
 		Entity e = null;
 		try {
 			switch(id) {
@@ -20,8 +21,7 @@ public class EntityFactory {
 						.newInstance(castParams(Player.class.getConstructors()[0],params));
 				break;
 			case "TileEntityTP":
-				e = (EntityTP) EntityTP.class.getConstructors()[0]
-						.newInstance(castParams(EntityTP.class.getConstructors()[0],params));
+				e = new EntityTP(new Coordonnees(Double.parseDouble(params[0]), Double.parseDouble(params[1])), new Direction(Integer.parseInt(params[2])), Boolean.parseBoolean(params[3]), params[4], new Coordonnees(Double.parseDouble(params[5]), Double.parseDouble(params[6])));
 				break;
 			case "TikiTorchSmall":
 				e = (TikiTorchSmall) TikiTorchSmall.class.getConstructors()[0]
@@ -44,9 +44,9 @@ public class EntityFactory {
 		}
 		return e;
 	}
-	public static Object[] castParams(Constructor<?> c,String parameters){
+	public static Object[] castParams(Constructor<?> c,String[] parameters){
 
-		String[] params = parameters.split(",");
+		String[] params = parameters;
 		Object[] os = new Object[c.getParameterCount()];
 
 		int nb = 0;

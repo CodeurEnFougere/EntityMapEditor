@@ -17,6 +17,7 @@ import app.utils.World;
 import game.modele.entity.Entity;
 import game.modele.entity.EntityTP;
 import game.modele.entity.living.EntityLiving;
+import game.modele.entity.tileEntity.EntityLight;
 import game.modele.entity.tileEntity.TileEntity;
 import game.modele.utils.Coordonnees;
 import game.modele.utils.Direction;
@@ -135,6 +136,7 @@ public class Controleur implements Initializable{
 	ImageView selectedTool;
 	ImageView selectedEntityType;
 	ImageView selectTile;
+	
 	boolean selectTileInWorld1=false;
 
 	Map<Integer,Image> dicoImageTileTextureMap = new HashMap<>();
@@ -330,7 +332,6 @@ public class Controleur implements Initializable{
 				if(entityType==0 && World.world1!=null && World.world2!=null) {
 					tpCoordonnees = new Coordonnees((int)me.getX()/32, (int)me.getY()/32);
 					isEvent=true;
-					System.out.println("Event true");
 					if(pane.getId()==world1.getId())
 						mapNameTp=World.world2.getName();
 					else 
@@ -343,7 +344,6 @@ public class Controleur implements Initializable{
 
 			}else if(tool==1 && isEvent && pane!=tempPane) {
 				isEvent=false;
-				System.out.println("Event false");
 				try {
 					newEntity = new EntityTP( tpCoordonnees, new Direction(Direction.North),true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
 					System.out.println("new entity :"+newEntity);		
@@ -372,7 +372,7 @@ public class Controleur implements Initializable{
 					for(ImageView block:entitysWorld1) {
 						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
 							selectedEntityOnWorld1=true;
-							selectedEntity = World.world1.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0];
+							selectedEntity = World.world1.entityHere((int)(me.getX()/32),(int)(me.getY()/32)).length >= 1?World.world1.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0]:null;
 							selectedEntityTextureId.setValue(""+block.getId());
 							selectedEntityTexture=block;
 							System.out.println(selectedEntity);
@@ -385,7 +385,7 @@ public class Controleur implements Initializable{
 					for(ImageView block:entitysWorld2) {
 						if((int)block.getLayoutX()/32==(int)me.getX()/32 && (int)block.getLayoutY()/32==(int)me.getY()/32 ) {
 							selectedEntityOnWorld1=false;
-							selectedEntity = World.world2.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0];
+							selectedEntity = World.world2.entityHere((int)(me.getX()/32),(int)(me.getY()/32)).length>=1?World.world2.entityHere((int)(me.getX()/32),(int)(me.getY()/32))[0]:null;
 							selectedEntityTextureId.setValue(""+block.getId());
 							selectedEntityTexture=block;
 							System.out.println(selectedEntity);
@@ -405,11 +405,41 @@ public class Controleur implements Initializable{
 	private void selectEntity() {
 		if(selectedEntity instanceof EntityTP) {
 			EntityTP entity = (EntityTP)selectedEntity;
-			tab1.setText(""+entity.coordonnes.getX());
-			tab2.setText(""+entity.coordonnes.getY());
+			label1.setLayoutX(51);
+			label2.setLayoutX(51);
+			label3.setLayoutX(7);
+			label1.setText("x :");
+			label2.setText("y :");
+			label3.setText("Tp World :");
+			label4.setText("Tp x :");
+			label5.setText("Tp y :");
+			label6.setText("");
+			tab1.setText(""+selectedEntity.coordonnes.getX());
+			tab2.setText(""+selectedEntity.coordonnes.getY());
 			tab3.setText(entity.getTPmapName());
 			tab4.setText(""+entity.getTPCoordonnees().getX());
 			tab5.setText(""+entity.getTPCoordonnees().getY());
+		}else if(selectedEntity instanceof EntityLight) {
+			EntityLight entity = (EntityLight)selectedEntity;
+			label2.setLayoutX(51);
+			label3.setLayoutX(51);
+			label4.setLayoutX(0);
+			label5.setLayoutX(29);
+			label1.setText("Type :");
+			label2.setText("x :");
+			label3.setText("y :");
+			label4.setText("Direction :");
+			label5.setText("Light :");
+			label6.setText("");
+			tab1.setText(entity.getId());
+			tab2.setText(""+selectedEntity.coordonnes.getX());
+			tab3.setText(""+selectedEntity.coordonnes.getY());
+			tab4.setText(""+selectedEntity.direction.getDirection());
+			tab5.setText(""+entity.lightLvl);
+			
+		}else if(selectedEntity instanceof EntityLiving) {
+			tab1.setText(""+selectedEntity.coordonnes.getX());
+			tab2.setText(""+selectedEntity.coordonnes.getY());
 		}
 	}
 
@@ -419,9 +449,6 @@ public class Controleur implements Initializable{
 		textureLoading();
 		eventHandler();
 
-
-		//TODO
-
 	}
 
 	private void loadWorld(String worldName, boolean isWorld1) {
@@ -429,7 +456,15 @@ public class Controleur implements Initializable{
 		try {
 			if(isWorld1) {
 				entityWorld1.getChildren().clear();
-				World.loadWorld(worldName, isWorld1);	
+				backgroundWorld1.getChildren().clear();
+				solidWorld1.getChildren().clear();
+				topWorld1.getChildren().clear();
+				world1.getChildren().clear();
+				world1.getChildren().add(backgroundWorld1);
+				world1.getChildren().add(solidWorld1);
+				world1.getChildren().add(topWorld1);
+				world1.getChildren().add(entityWorld1);
+				World.loadWorld(worldName, true);	
 				resize(world1, World.world1.getWidth()*32, World.world1.getHeight()*32);
 				resize(backgroundWorld1, World.world1.getWidth()*32, World.world1.getHeight()*32);
 				resize(solidWorld1, World.world1.getWidth()*32, World.world1.getHeight()*32);
@@ -441,7 +476,15 @@ public class Controleur implements Initializable{
 
 			}else {
 				entityWorld2.getChildren().clear();
-				World.loadWorld(worldName, isWorld1);	
+				backgroundWorld2.getChildren().clear();
+				solidWorld2.getChildren().clear();
+				topWorld2.getChildren().clear();
+				world2.getChildren().clear();
+				world2.getChildren().add(backgroundWorld2);
+				world2.getChildren().add(solidWorld2);
+				world2.getChildren().add(topWorld2);
+				world2.getChildren().add(entityWorld2);
+				World.loadWorld(worldName, false);	
 				resize(world2, World.world2.getWidth()*32, World.world2.getHeight()*32);
 				resize(backgroundWorld2, World.world2.getWidth()*32, World.world2.getHeight()*32);
 				resize(solidWorld2, World.world2.getWidth()*32, World.world2.getHeight()*32);
@@ -463,28 +506,31 @@ public class Controleur implements Initializable{
 		alert.show();
 	}
 
+	Image entityTp;
+	Image entityLiving;
+	Image entityLight;
 	public void loadEntitys(ArrayList<ImageView> entitysImage, ObservableList<Entity> observableList) {
 
 		for(Entity entity:observableList) {
 			ImageView entityImage;
 			System.out.println(entity.getId());
-			try {
-				if(entity instanceof EntityTP) {
+			if(entity instanceof EntityTP) {
 
-					entityImage = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
-					entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
-					entitysImage.add(entityImage);
+				entityImage = new ImageView(entityTp);
+				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
+				entitysImage.add(entityImage);
 
 
-				}else if(entity instanceof EntityLiving) {
-					entityImage = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
-					entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
-					entitysImage.add(entityImage);
-				}else if(entity instanceof TileEntity) {
-
-				}
-			}catch (IOException | URISyntaxException e) {
-				e.printStackTrace();
+			}else if(entity instanceof EntityLiving) {
+				entityImage = new ImageView(entityLiving);
+				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
+				entitysImage.add(entityImage);
+				
+			}else if(entity instanceof TileEntity) {
+				entityImage = new ImageView(entityLight);
+				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
+				entitysImage.add(entityImage);
+				
 			}
 		}		
 	}
@@ -501,6 +547,15 @@ public class Controleur implements Initializable{
 		selectedEntityTextureId=new SimpleStringProperty();
 		entitysWorld1=new ArrayList<ImageView>();
 		entitysWorld2=new ArrayList<ImageView>();
+		try {
+			entityTp = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null);
+			entityLiving = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null);
+			entityLight = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/entityLight.png").toURI().toURL()), null);
+		}catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void eventHandler() {
@@ -598,6 +653,10 @@ public class Controleur implements Initializable{
 			tileEntity.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=2;selectedEntityType.relocate(93, 88);}});
 			toolBar.getChildren().add(tileEntity);
 
+			ImageView entityLight = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/entityLight.png").toURI().toURL()), null));
+			entityLight.relocate(136, 89);
+			entityLight.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=3;selectedEntityType.relocate(136, 88);}});
+			toolBar.getChildren().add(entityLight);
 
 			selectedTool = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/select.png").toURI().toURL()), null));
 			selectedTool.relocate(9, 29);
