@@ -355,37 +355,74 @@ public class Controleur implements Initializable{
 						mapNameTp=World.world2.getName();
 					else 
 						mapNameTp=World.world1.getName();
-				}else {
+				}else if(entityType==1) {
+					try {
+					newEntity = EntityFactory.create( 
+							 tab1.getText(),
+							(tab2.getText().length()>0?""+tab2.getText():"")+
+							(tab3.getText().length()>0?","+tab3.getText():"")+
+							(tab4.getText().length()>0?","+tab4.getText():"")+
+							(tab5.getText().length()>0?","+tab5.getText():"")+
+							(tab6.getText().length()>0?","+tab6.getText():"")+
+							(tab7.getText().length()>0?","+tab7.getText():"")+
+							(tab8.getText().length()>0?","+tab8.getText():"") );
+				System.out.println("New entity : "+newEntity);		
+
+				ImageView img;
+
+				img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
+				img.relocate(newEntity.coordonnes.getX()*32, newEntity.coordonnes.getY()*32);
+				img.setId(""+idImageView);
+				idImageView++;
+
+				if(pane.getId()==world2.getId()) {
+					world1.getChildren().add(img);
+					entitysWorld1.add(img);
+					World.world1.getEntity().add(newEntity);
+				}else if(pane.getId()==world1.getId()){
+					world2.getChildren().add(img);
+					entitysWorld2.add(img);
+					World.world2.getEntity().add(newEntity);
+				}
+					}catch(Exception e) {
+						e.printStackTrace();
+						alert.setAlertType(AlertType.ERROR);
+						alert.setContentText("Un des champs n'est pas valide");
+						alert.show();
+					}
+				
+			} else {
 					alert.setAlertType(AlertType.WARNING);
 					alert.setContentText("All world need to be loaded");
 					alert.show();
 				}
 
-			}else if(tool==1 && isEvent && pane!=tempPane) {
-				isEvent=false;
+			}else if(tool==1 && isEvent) {
 				try {
-					newEntity = new EntityTP( tpCoordonnees, new Direction(Direction.North),true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
-					System.out.println("New entity : "+newEntity);		
+					if(entityType==0 && pane!=tempPane) {
+						isEvent=false;
 
-					ImageView img;
+						newEntity = new EntityTP( tpCoordonnees, new Direction(Direction.North),true, mapNameTp, new Coordonnees((int)me.getX()/32, (int)me.getY()/32));
+						System.out.println("New entity : "+newEntity);		
 
-					img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
-					img.relocate(newEntity.coordonnes.getX()*32, newEntity.coordonnes.getY()*32);
-					img.setId(""+idImageView);
-					idImageView++;
+						ImageView img;
 
-					if(pane.getId()==world2.getId()) {
-						world1.getChildren().add(img);
-						entitysWorld1.add(img);
-						World.world1.getEntity().add(newEntity);
-					}else if(pane.getId()==world1.getId()){
-						world2.getChildren().add(img);
-						entitysWorld2.add(img);
-						World.world2.getEntity().add(newEntity);
+						img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
+						img.relocate(newEntity.coordonnes.getX()*32, newEntity.coordonnes.getY()*32);
+						img.setId(""+idImageView);
+						idImageView++;
+
+						if(pane.getId()==world2.getId()) {
+							world1.getChildren().add(img);
+							entitysWorld1.add(img);
+							World.world1.getEntity().add(newEntity);
+						}else if(pane.getId()==world1.getId()){
+							world2.getChildren().add(img);
+							entitysWorld2.add(img);
+							World.world2.getEntity().add(newEntity);
+						}
 					}
 				} catch (IOException | URISyntaxException e) {e.printStackTrace();}
-
-
 			}else if(tool==2) {
 				if(pane.getId()==world1.getId()) {
 					for(ImageView block:entitysWorld1) {
@@ -716,7 +753,15 @@ public class Controleur implements Initializable{
 
 			ImageView entityLiving = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
 			entityLiving.relocate(52, 89);
-			entityLiving.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=1;selectedEntityType.relocate(51, 88);}});
+			entityLiving.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {
+				entityType=1;
+				selectedEntityType.relocate(51, 88);
+				label5.setLayoutX(35);
+				label6.setLayoutX(31);
+				label5.setText("PV :");
+				label6.setText("");
+				label7.setText("");
+				label8.setText("");}});
 			toolBar.getChildren().add(entityLiving);
 
 			ImageView tileEntity = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/tileEntity.png").toURI().toURL()), null));

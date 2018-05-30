@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import app.EntityMapEditor;
 import game.modele.entity.Entity;
 import game.modele.entity.EntityTP;
 import game.modele.entity.living.EntityLiving;
@@ -17,7 +18,7 @@ public class Saver {
 	public static void saveEntity(WorldData world) {
 		try {
 			
-			BufferedWriter entitysData = new BufferedWriter(new FileWriter(new File("ressources/map/"+world.getName()+".entity").getAbsolutePath()));
+			BufferedWriter entitysData = new BufferedWriter(new FileWriter(new File(EntityMapEditor.mainPath+"/ressources/map/"+world.getName()+".entity").getAbsolutePath()));
 				
 			for(Entity curEntity:world.getEntity()) {
 				

@@ -14,6 +14,7 @@ public class EntityMapEditor extends Application {
 	public static String mainPath="";
 	
 	public static void main(String[] args) {
+		
 		String[] path = EntityMapEditor.class.getClassLoader().getResource("").getPath().split("/");
 		boolean isEclipseLaunch=path[path.length-1].equals("bin")?true:false;
 		for(int azerty=0;azerty<path.length-(isEclipseLaunch?1:0);azerty++) {
