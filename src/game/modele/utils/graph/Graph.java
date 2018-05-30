@@ -36,6 +36,7 @@ public class Graph {
 
 
 
+	@SuppressWarnings("unchecked")
 	public void Dijkstra(int x,int y){
 		direction = new SimpleEntry[width][height];
 		queue = new LinkedList<Point>();

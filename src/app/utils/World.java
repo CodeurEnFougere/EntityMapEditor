@@ -2,18 +2,20 @@ package app.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import app.EntityMapEditor;
 import game.modele.entity.Entity;
 import game.modele.entity.EntityFactory;
 import game.modele.entity.Player.Player;
 import game.modele.tile.Tile;
 import game.modele.tile.TileFactory;
 import game.modele.world.WorldData;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class World {
 	
@@ -32,8 +34,18 @@ public class World {
 		TileFactory.load();
 		try {
 			//Chargement des tiles
-			BufferedReader tilesData = new BufferedReader(new FileReader(new File("ressources/map/"+file+".map").getAbsolutePath()));
-
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setAlertType(AlertType.WARNING);
+			alert.setTitle(new File(EntityMapEditor.mainPath+"/ressources/map/"+file+".map").getCanonicalPath().toString());
+			alert.setContentText(new File(EntityMapEditor.mainPath+"/ressources/map/"+file+".map").getAbsolutePath().toString());
+			System.out.println(new File(EntityMapEditor.mainPath+"/ressources/map/"+file+".map").getAbsolutePath().toString());
+			alert.show();
+			alert.setResizable(true);
+			alert.setWidth(800);
+			
+			
+			BufferedReader tilesData = new BufferedReader(new FileReader(new File(EntityMapEditor.mainPath+"/ressources/map/"+file+".map").getAbsolutePath()));
+			
 			String name = tilesData.readLine();
 			int width = Integer.parseInt(tilesData.readLine());
 			int height = Integer.parseInt(tilesData.readLine());
@@ -64,7 +76,7 @@ public class World {
 		ArrayList<Entity> entity= new ArrayList<Entity>();
 		BufferedReader entityData;
 		try {
-			entityData = new BufferedReader(new FileReader(new File("ressources/map/"+world+".entity").getAbsolutePath()));
+			entityData = new BufferedReader(new FileReader(new File(EntityMapEditor.mainPath+"/ressources/map/"+world+".entity").getAbsolutePath()));
 		
 
 		String nextLine = entityData.readLine();
