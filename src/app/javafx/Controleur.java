@@ -135,7 +135,7 @@ public class Controleur implements Initializable{
 	ImageView selectedTool;
 	ImageView selectedEntityType;
 	ImageView selectTile;
-	
+
 	boolean selectTileInWorld1=false;
 
 	Map<Integer,Image> dicoImageTileTextureMap = new HashMap<>();
@@ -171,59 +171,59 @@ public class Controleur implements Initializable{
 	@FXML
 	void saveEntity(ActionEvent event) {
 		if(selectedEntityTexture!=null)
-		try {
-			ImageView img = new ImageView(selectedEntityTexture.getImage());
-			
-			if(selectedEntityOnWorld1) {
-				World.world1.getEntity().remove(selectedEntity);
-				entitysWorld1.remove(selectedEntityTexture);
-				entityWorld1.getChildren().remove(selectedEntityTexture);
-				img.relocate(Double.parseDouble(tab2.getText())*32, Double.parseDouble(tab3.getText())*32);
-				img.setId(""+idImageView);
-				idImageView++;
-				entitysWorld1.add(img);
-				entityWorld1.getChildren().add(img);
-				System.out.println(tab8.getText().length()+" "+tab8.getText());
-				World.world1.getEntity().add( EntityFactory.create( 
-						 tab1.getText(),
-						(tab2.getText().length()>0?""+tab2.getText():"")+
-						(tab3.getText().length()>0?","+tab3.getText():"")+
-						(tab4.getText().length()>0?","+tab4.getText():"")+
-						(tab5.getText().length()>0?","+tab5.getText():"")+
-						(tab6.getText().length()>0?","+tab6.getText():"")+
-						(tab7.getText().length()>0?","+tab7.getText():"")+
-						(tab8.getText().length()>0?","+tab8.getText():"") ));
-				
-				
-			}else {
-				World.world2.getEntity().remove(selectedEntity);
-				entitysWorld2.remove(selectedEntityTexture);
-				entityWorld2.getChildren().remove(selectedEntityTexture);
-				img.relocate(Double.parseDouble(tab2.getText())*32, Double.parseDouble(tab3.getText())*32);
-				img.setId(""+idImageView);
-				idImageView++;
-				entitysWorld2.add(img);
-				entityWorld2.getChildren().add(img);
-				World.world2.getEntity().add( EntityFactory.create( 
-						 tab1.getText(),
-						(tab2.getText().length()>0?""+tab2.getText():"")+
-						(tab3.getText().length()>0?","+tab3.getText():"")+
-						(tab4.getText().length()>0?","+tab4.getText():"")+
-						(tab5.getText().length()>0?","+tab5.getText():"")+
-						(tab6.getText().length()>0?","+tab6.getText():"")+
-						(tab7.getText().length()>0?","+tab7.getText():"")+
-						(tab8.getText().length()>0?","+tab8.getText():"") ));
-						
+			try {
+				ImageView img = new ImageView(selectedEntityTexture.getImage());
+
+				if(selectedEntityOnWorld1) {
+					World.world1.getEntity().remove(selectedEntity);
+					entitysWorld1.remove(selectedEntityTexture);
+					entityWorld1.getChildren().remove(selectedEntityTexture);
+					img.relocate(Double.parseDouble(tab2.getText())*32, Double.parseDouble(tab3.getText())*32);
+					img.setId(""+idImageView);
+					idImageView++;
+					entitysWorld1.add(img);
+					entityWorld1.getChildren().add(img);
+					System.out.println(tab8.getText().length()+" "+tab8.getText());
+					World.world1.getEntity().add( EntityFactory.create( 
+							tab1.getText(),
+							(tab2.getText().length()>0?""+tab2.getText():"")+
+							(tab3.getText().length()>0?","+tab3.getText():"")+
+							(tab4.getText().length()>0?","+tab4.getText():"")+
+							(tab5.getText().length()>0?","+tab5.getText():"")+
+							(tab6.getText().length()>0?","+tab6.getText():"")+
+							(tab7.getText().length()>0?","+tab7.getText():"")+
+							(tab8.getText().length()>0?","+tab8.getText():"") ));
+
+
+				}else {
+					World.world2.getEntity().remove(selectedEntity);
+					entitysWorld2.remove(selectedEntityTexture);
+					entityWorld2.getChildren().remove(selectedEntityTexture);
+					img.relocate(Double.parseDouble(tab2.getText())*32, Double.parseDouble(tab3.getText())*32);
+					img.setId(""+idImageView);
+					idImageView++;
+					entitysWorld2.add(img);
+					entityWorld2.getChildren().add(img);
+					World.world2.getEntity().add( EntityFactory.create( 
+							tab1.getText(),
+							(tab2.getText().length()>0?""+tab2.getText():"")+
+							(tab3.getText().length()>0?","+tab3.getText():"")+
+							(tab4.getText().length()>0?","+tab4.getText():"")+
+							(tab5.getText().length()>0?","+tab5.getText():"")+
+							(tab6.getText().length()>0?","+tab6.getText():"")+
+							(tab7.getText().length()>0?","+tab7.getText():"")+
+							(tab8.getText().length()>0?","+tab8.getText():"") ));
+
+				}
+
+				selectedEntityTexture=null;
+
+			}catch(Exception e) {
+				alert.setAlertType(AlertType.ERROR);
+				alert.setContentText("Un des champs n'est pas valide");
+				alert.show();
+				e.printStackTrace();
 			}
-			
-			selectedEntityTexture=null;
-			
-		}catch(Exception e) {
-			alert.setAlertType(AlertType.ERROR);
-			alert.setContentText("Un des champs n'est pas valide");
-			alert.show();
-			e.printStackTrace();
-		}
 	}
 
 	@FXML
@@ -357,41 +357,35 @@ public class Controleur implements Initializable{
 						mapNameTp=World.world1.getName();
 				}else if(entityType==1) {
 					try {
-					newEntity = EntityFactory.create( 
-							 tab1.getText(),
-							(tab2.getText().length()>0?""+tab2.getText():"")+
-							(tab3.getText().length()>0?","+tab3.getText():"")+
-							(tab4.getText().length()>0?","+tab4.getText():"")+
-							(tab5.getText().length()>0?","+tab5.getText():"")+
-							(tab6.getText().length()>0?","+tab6.getText():"")+
-							(tab7.getText().length()>0?","+tab7.getText():"")+
-							(tab8.getText().length()>0?","+tab8.getText():"") );
-				System.out.println("New entity : "+newEntity);		
+						newEntity = EntityFactory.create(tab1.getText(),"0,0"+(tab4.getText().length()>0?","+tab4.getText():"")+(tab5.getText().length()>0?","+tab5.getText():"")+(tab6.getText().length()>0?","+tab6.getText():"")+(tab7.getText().length()>0?","+tab7.getText():"")+(tab8.getText().length()>0?","+tab8.getText():"") );
+						newEntity.coordonnes.setCoordoner((int)me.getX()/32, (int)me.getY()/32);
+						
+						ImageView newEntityImage = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
+						newEntityImage.relocate(newEntity.coordonnes.getX()*32, newEntity.coordonnes.getY()*32);
+						newEntityImage.setId(""+idImageView);
+						idImageView++;
+						
+						
 
-				ImageView img;
-
-				img = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
-				img.relocate(newEntity.coordonnes.getX()*32, newEntity.coordonnes.getY()*32);
-				img.setId(""+idImageView);
-				idImageView++;
-
-				if(pane.getId()==world2.getId()) {
-					world1.getChildren().add(img);
-					entitysWorld1.add(img);
-					World.world1.getEntity().add(newEntity);
-				}else if(pane.getId()==world1.getId()){
-					world2.getChildren().add(img);
-					entitysWorld2.add(img);
-					World.world2.getEntity().add(newEntity);
-				}
+						if(pane.getId()==world1.getId()) {
+							world1.getChildren().add(newEntityImage);
+							entitysWorld1.add(newEntityImage);
+							World.world1.entity.add(newEntity);
+							
+						}else if(pane.getId()==world2.getId()){
+							world2.getChildren().add(newEntityImage);
+							entitysWorld2.add(newEntityImage);
+							World.world2.entity.add(newEntity);
+						}
+						System.out.println("New entity : "+newEntity+" at x: "+newEntity.coordonnes.getX()+" y: "+newEntity.coordonnes.getY());	
 					}catch(Exception e) {
 						e.printStackTrace();
 						alert.setAlertType(AlertType.ERROR);
 						alert.setContentText("Un des champs n'est pas valide");
 						alert.show();
 					}
-				
-			} else {
+
+				} else {
 					alert.setAlertType(AlertType.WARNING);
 					alert.setContentText("All world need to be loaded");
 					alert.show();
@@ -461,56 +455,56 @@ public class Controleur implements Initializable{
 	}
 
 	private void selectEntity() {
-		
+
 		label1.setLayoutX(31);
 		label2.setLayoutX(51);
 		label3.setLayoutX(51);
 		label4.setLayoutX(7);
 		label5.setLayoutX(31);
-		
+
 		label1.setText("Type :");
 		label2.setText("x :");
 		label3.setText("y :");
 		label4.setText("Direction :");
-		
+
 		tab1.setText(selectedEntity.getId());
 		tab2.setText(""+selectedEntity.coordonnes.getX());
 		tab3.setText(""+selectedEntity.coordonnes.getY());
 		tab4.setText(""+selectedEntity.direction.getDirection());
-		
-		
+
+
 		if(selectedEntity instanceof EntityTP) {
 			EntityTP entity = (EntityTP)selectedEntity;
-			
+
 			label6.setLayoutX(15);
 			label7.setLayoutX(29);
 			label8.setLayoutX(29);
-			
+
 			label5.setText("Etat :");
 			label6.setText("Tp World :");
 			label7.setText("Tp x :");
 			label8.setText("Tp y :");
-			
+
 			tab5.setText(""+entity.getEtat());
 			tab6.setText(entity.getTPmapName());
 			tab7.setText(""+entity.getTPCoordonnees().getX());
 			tab8.setText(""+entity.getTPCoordonnees().getY());
-			
+
 		}else if(selectedEntity instanceof EntityLight) {
 			EntityLight entity = (EntityLight)selectedEntity;
-			
+
 			label6.setLayoutX(31);
-				
+
 			label5.setText("Etat :");
 			label6.setText("Light :");
 			label7.setText("");
 			label8.setText("");
-			
+
 			tab5.setText(""+entity.getEtat());
 			tab6.setText(""+entity.lightLvl);
 			tab7.setText("");
 			tab8.setText("");
-			
+
 		}else if(selectedEntity instanceof EntityLiving) {
 			EntityLiving entity = (EntityLiving)selectedEntity;
 			label5.setLayoutX(35);
@@ -521,7 +515,7 @@ public class Controleur implements Initializable{
 			label7.setText("");
 			label8.setText("");
 
-			tab5.setText(""+entity.getPV());
+			tab5.setText(""+entity.getPV().intValue());
 			tab6.setText("");
 			tab7.setText("");
 			tab8.setText("");
@@ -612,12 +606,12 @@ public class Controleur implements Initializable{
 				entityImage = new ImageView(entityLiving);
 				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
 				entitysImage.add(entityImage);
-				
+
 			}else if(entity instanceof TileEntity) {
 				entityImage = new ImageView(entityLight);
 				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
 				entitysImage.add(entityImage);
-				
+
 			}
 		}		
 	}
@@ -676,31 +670,30 @@ public class Controleur implements Initializable{
 		world2.setOnMouseDragged(new EventHandler<MouseEvent>() {public void handle(MouseEvent me) {mouseEvent(me,world2);}});
 
 		selectedEntityTextureId.addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				try {
 					String start="";
-					
-						if(selectedEntityLast instanceof EntityTP) {
-							start="EntityTP";
-						}else if(selectedEntityLast != null){
-							String path = selectedEntityLast.getClass().getSuperclass().getName();
-							int currentChar = path.length()-1;
-							String end="";
 
-							while (!(""+path.charAt(currentChar)).equals(".") && currentChar>=0) {
-								end+=path.charAt(currentChar);
-								currentChar--;
-							}
-							currentChar=end.length()-1;
-							while(currentChar>=0) {
-								start+=end.charAt(currentChar);
-								currentChar--;
-							}
+					if(selectedEntityLast instanceof EntityTP) {
+						start="EntityTP";
+					}else if(selectedEntityLast != null){
+						String path = selectedEntityLast.getClass().getSuperclass().getName();
+						int currentChar = path.length()-1;
+						String end="";
+
+						while (!(""+path.charAt(currentChar)).equals(".") && currentChar>=0) {
+							end+=path.charAt(currentChar);
+							currentChar--;
 						}
+						currentChar=end.length()-1;
+						while(currentChar>=0) {
+							start+=end.charAt(currentChar);
+							currentChar--;
+						}
+					}
 					System.out.println(start);
-					
+
 					if(!entitysWorld1.isEmpty())
 						for(ImageView img:entitysWorld1) {
 
