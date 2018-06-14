@@ -7,10 +7,13 @@ import java.io.IOException;
 
 import app.EntityMapEditor;
 import game.modele.entity.Entity;
+import game.modele.entity.EntityItemOnGround;
 import game.modele.entity.EntityTP;
-import game.modele.entity.living.EntityLiving;
-import game.modele.entity.tileEntity.EntityLight;
-import game.modele.entity.tileEntity.TileEntity;
+import game.modele.entity.tileEntity.TikiTorchSmall;
+import game.modele.entity.tileEntity.chest.Chest;
+import game.modele.entity.tileEntity.chest.GoldChest;
+import game.modele.entity.tileEntity.chest.IronChest;
+import game.modele.entity.tileEntity.chest.WoodChest;
 import game.modele.world.WorldData;
 
 public class Saver {
@@ -20,47 +23,50 @@ public class Saver {
 			
 			BufferedWriter entitysData = new BufferedWriter(new FileWriter(new File(EntityMapEditor.mainPath+"/ressources/map/"+world.getName()+".entity").getAbsolutePath()));
 				
-			for(Entity curEntity:world.getEntity()) {
-				
-				
-				
-				if(curEntity instanceof EntityTP) {
-					EntityTP entity=(EntityTP) curEntity;	
-					entitysData.write("Tile"+curEntity.getId());entitysData.newLine();
+			for(Entity entity:world.getEntity()) {
+				if(!entity.getId().equals("Player")) {
+					entitysData.write(entity.getId());entitysData.newLine();
 					entitysData.write(""+entity.coordonnes.getX());
 					entitysData.write(","+entity.coordonnes.getY());
 					entitysData.write(","+entity.direction.getDirection());
-					entitysData.write(","+entity.getEtat());
-					entitysData.write(","+entity.getTPmapName());
-					entitysData.write(","+entity.getTPCoordonnees().getX());
-					entitysData.write(","+entity.getTPCoordonnees().getY());entitysData.newLine();
-				
-				}else if(curEntity instanceof EntityLiving) {
-					EntityLiving entity=(EntityLiving) curEntity;
-					entitysData.write(curEntity.getId());entitysData.newLine();
-					entitysData.write(""+entity.coordonnes.getX());
-					entitysData.write(","+entity.coordonnes.getY());
-					entitysData.write(","+entity.direction.getDirection());
-					entitysData.write(","+entity.getPV().get());
+
+					switch(entity.getId()) {
+
+					case "EntityTP":
+						EntityTP entityTP = (EntityTP)entity;
+						entitysData.write(","+entityTP.getEtat());
+						entitysData.write(","+entityTP.getTPmapName());
+						entitysData.write(","+entityTP.getTPCoordonnees().getX());
+						entitysData.write(","+entityTP.getTPCoordonnees().getY());
+						break;
+
+					case "Gold Chest":
+						GoldChest goldChest = (GoldChest)entity;
+						entitysData.write(","+itemInsideChest(goldChest));
+						break;
+
+					case "Iron Chest":
+						IronChest ironChest = (IronChest)entity;
+						entitysData.write(","+itemInsideChest(ironChest));
+						break;
+
+					case "Wood Chest":
+						WoodChest woodChest = (WoodChest)entity;
+						entitysData.write(","+itemInsideChest(woodChest));
+						break;
+
+					case "ItemOnGround":
+						EntityItemOnGround entityItemOnGround = (EntityItemOnGround)entity;
+						entitysData.write(","+entityItemOnGround.item.name);
+						break;
+						
+					case "TikiTorchSmall":
+						TikiTorchSmall tikiTorchSmall = (TikiTorchSmall)entity;
+						entitysData.write(","+tikiTorchSmall.getEtat()+
+								","+tikiTorchSmall.lightLvl);
+						break;
+					}
 					entitysData.newLine();
-				
-				}else if(curEntity instanceof EntityLight) {
-					EntityLight entity=(EntityLight) curEntity;
-					entitysData.write(curEntity.getId());entitysData.newLine();
-					entitysData.write(""+entity.coordonnes.getX());
-					entitysData.write(","+entity.coordonnes.getY());
-					entitysData.write(","+entity.direction.getDirection());
-					entitysData.write(","+entity.getEtat());
-					entitysData.write(","+entity.lightLvl);
-					entitysData.newLine();
-				}else if(curEntity instanceof TileEntity) {
-						TileEntity entity=(TileEntity) curEntity;
-						entitysData.write(curEntity.getId());entitysData.newLine();
-						entitysData.write(""+entity.coordonnes.getX());
-						entitysData.write(","+entity.coordonnes.getY());
-						entitysData.write(","+entity.getEtat());
-						entitysData.write(","+entity.direction.getDirection());
-						entitysData.newLine();
 				}
 			}
 			
@@ -70,6 +76,11 @@ public class Saver {
 		}	
 		
 	}
-
+		private static String itemInsideChest(Chest chest) {
+			if(chest.itemInside != null)
+				return chest.itemInside.name;
+			else
+				return null;
+		}
 	
 }

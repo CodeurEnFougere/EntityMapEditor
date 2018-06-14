@@ -20,6 +20,7 @@ import game.modele.entity.EntityTP;
 import game.modele.entity.living.EntityLiving;
 import game.modele.entity.tileEntity.EntityLight;
 import game.modele.entity.tileEntity.TileEntity;
+import game.modele.entity.tileEntity.chest.Chest;
 import game.modele.utils.Coordonnees;
 import game.modele.utils.Direction;
 import game.modele.world.WorldData;
@@ -505,6 +506,21 @@ public class Controleur implements Initializable{
 			tab7.setText("");
 			tab8.setText("");
 
+		}else if(selectedEntity instanceof Chest) {
+			Chest entity = (Chest)selectedEntity;
+
+			label6.setLayoutX(31);
+
+			label5.setText("Item :");
+			label6.setText("");
+			label7.setText("");
+			label8.setText("");
+
+			tab5.setText(""+entity.itemInside != null ?entity.itemInside.getItemName() : "");
+			tab6.setText("");
+			tab7.setText("");
+			tab8.setText("");
+
 		}else if(selectedEntity instanceof EntityLiving) {
 			EntityLiving entity = (EntityLiving)selectedEntity;
 			label5.setLayoutX(35);
@@ -590,13 +606,14 @@ public class Controleur implements Initializable{
 	Image entityTp;
 	Image entityLiving;
 	Image entityLight;
+	Image entity;
 	public void loadEntitys(ArrayList<ImageView> entitysImage, ObservableList<Entity> observableList) {
 
 		for(Entity entity:observableList) {
-			ImageView entityImage;
 			System.out.println(entity.getId());
+			ImageView entityImage;
+			
 			if(entity instanceof EntityTP) {
-
 				entityImage = new ImageView(entityTp);
 				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
 				entitysImage.add(entityImage);
@@ -607,8 +624,13 @@ public class Controleur implements Initializable{
 				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
 				entitysImage.add(entityImage);
 
-			}else if(entity instanceof TileEntity) {
+			}else if(entity instanceof EntityLight) {
 				entityImage = new ImageView(entityLight);
+				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
+				entitysImage.add(entityImage);
+
+			}else if(entity instanceof TileEntity) {
+				entityImage = new ImageView(this.entity);
 				entityImage.relocate(entity.coordonnes.getX()*32, entity.coordonnes.getY()*32);
 				entitysImage.add(entityImage);
 
@@ -632,6 +654,7 @@ public class Controleur implements Initializable{
 			entityTp = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null);
 			entityLiving = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null);
 			entityLight = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/entityLight.png").toURI().toURL()), null);
+			entity = SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/Entity.png").toURI().toURL()), null);
 		}catch (IOException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
@@ -698,7 +721,7 @@ public class Controleur implements Initializable{
 						for(ImageView img:entitysWorld1) {
 
 							if(oldValue!=null && img.getId().equals(oldValue)) 
-								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/"+start+".png").toURI().toURL()), null));
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/Entity.png").toURI().toURL()), null));
 
 							else if(img.getId().equals(newValue)) 
 								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP2.png").toURI().toURL()), null));
@@ -708,7 +731,7 @@ public class Controleur implements Initializable{
 						for(ImageView img:entitysWorld2) {
 
 							if(oldValue!=null && img.getId().equals(oldValue)) 
-								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/"+start+".png").toURI().toURL()), null));
+								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/Entity.png").toURI().toURL()), null));
 
 							else if(img.getId().equals(newValue)) 
 								img.setImage(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP2.png").toURI().toURL()), null));
@@ -741,7 +764,18 @@ public class Controleur implements Initializable{
 			//Entity Placer
 			ImageView entityTP = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityTP.png").toURI().toURL()), null));
 			entityTP.relocate(10, 89);
-			entityTP.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=0;selectedEntityType.relocate(9, 88);}});
+			entityTP.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {
+				entityType=0;
+				selectedEntityType.relocate(9, 88);
+				label5.setLayoutX(35);
+				label6.setLayoutX(15);
+				label7.setLayoutX(29);
+				label8.setLayoutX(29);
+
+				label5.setText("Etat :");
+				label6.setText("Tp World :");
+				label7.setText("Tp x :");
+				label8.setText("Tp y :");}});
 			toolBar.getChildren().add(entityTP);
 
 			ImageView entityLiving = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/EntityLiving.png").toURI().toURL()), null));
@@ -759,7 +793,9 @@ public class Controleur implements Initializable{
 
 			ImageView tileEntity = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/tileEntity.png").toURI().toURL()), null));
 			tileEntity.relocate(94, 89);
-			tileEntity.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {entityType=2;selectedEntityType.relocate(93, 88);}});
+			tileEntity.setOnMousePressed(new EventHandler<MouseEvent>() {public void handle(MouseEvent event) {
+				entityType=2;
+				selectedEntityType.relocate(93, 88);}});
 			toolBar.getChildren().add(tileEntity);
 
 			ImageView entityLight = new ImageView(SwingFXUtils.toFXImage(ImageIO.read(getClass().getResource("/ressources/textures/entityLight.png").toURI().toURL()), null));
