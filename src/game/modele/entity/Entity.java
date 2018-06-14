@@ -1,7 +1,6 @@
 package game.modele.entity;
 
 import app.utils.World;
-import game.modele.entity.Player.Player;
 import game.modele.entity.living.monster.EntityMonster;
 import game.modele.tile.Tile;
 import game.modele.tile.tileGround.tileVoid;
@@ -130,14 +129,6 @@ public abstract class Entity {
 				top.EntityUnder(this);
 				currentTop = top;
 			}
-
-			
-			
-
-			Player thisPlayer = null;
-
-			if(this.getId().equals("Player"))
-				thisPlayer = (Player)this;
 
 			if(!World.currentMap.getTile((int)coordonnees.getY(), (int)coordonnees.getX()).solid() &&
 					!World.currentMap.getTile((int)(coordonnees.getY()+ hitBoxY), (int)(coordonnees.getX()+ hitBoxX)).solid() &&
